@@ -2,8 +2,8 @@
 
 CXX=g++
 PKG_CONFIG_PATH=/usr/share/pkgconfig
-PKG_CONFIG_CFLAGS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); pkg-config gtkmm-2.4 --cflags)
-PKG_CONFIG_LIBS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); pkg-config gtkmm-2.4 --libs)
+PKG_CONFIG_CFLAGS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.4 --cflags)
+PKG_CONFIG_LIBS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.4 --libs)
 CFLAGS=-std=c++0x -g -Iinc $(PKG_CONFIG_CFLAGS)
 LIBS=$(PKG_CONFIG_LIBS)
 OBJS=main.o gui.o
