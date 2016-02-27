@@ -35,5 +35,5 @@ OCR: OCR.o Image.o
 
 #target to clean the directory
 clean:
-	rm -f *.o *.jpg $(DESIGN) $(IMAGES) $(LIBS)
+	rm -f *.o *.ppm $(DESIGN) $(IMAGES) $(LIBS)
     
