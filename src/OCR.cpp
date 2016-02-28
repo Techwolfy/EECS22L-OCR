@@ -205,5 +205,30 @@ IMAGE ReadImage(const char fname[SLEN])
     //}
 }
 
+//character cropping function
+/*void charCrop(IMAGE image){
+	int wImg = image.WIDTH;
+	int hImg = image.HEIGHT;
+	
+	int cwImg = wImg/30;
+	int chImg = hImg/46;
 
-
+	int countWidth = cwImg;
+	int countHeight = chImg;
+	
+	IMAGE imgList[cwImg][chImg];
+	for(int x=0; x<cwImg; x++){
+		for(int y=0; y<chImg; y++){
+			IMAGE img = new IMAGE;
+			img.WIDTH = countWidth;
+			img.HEIGHT = countHeight;
+			img.R = image.R;
+			img.G = image.G;
+			img.B = image.B;
+		
+			imgList[x][y] = img;
+			countWidth = cwImg + countWidth;
+		}
+	}
+	countHeight = chImg + countHeight;
+}*/
