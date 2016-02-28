@@ -23,8 +23,7 @@ int  main()
      * for each color component
      */
     IMAGE image;
-    int degree;
-    double radian;
+
     
     
     

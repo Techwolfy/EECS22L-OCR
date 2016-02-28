@@ -32,7 +32,14 @@ OCR.o:  ../inc/Image.h OCR.cpp
 #target to generate OCR
 OCR: OCR.o Image.o
 	$(CC) $(LFLAGS) OCR.o Image.o -L. -o OCR
+ 
+#target to generate test_io.o
+test_io.o:  ../inc/Image.h ../test/test_io.cpp
+	$(CC) $(CFLAGS) ../test/test_io.cpp -o test_io.o 
 
+#target to generate test_io
+test_io: test_io.o Image.o
+	$(CC) $(LFLAGS) test_io.o Image.o -L. -o test_io 
 #target to clean the directory
 clean:
 	rm -f *.o *.ppm $(DESIGN) $(IMAGES) $(LIBS)
