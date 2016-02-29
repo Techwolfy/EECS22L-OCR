@@ -177,7 +177,74 @@ void IMAGE::rotate(double radians,int offsetX, int offsetY){
     
     
 }
+/*---------------------add Feb 28 Donghao Feng---------------------------------------*/
+void IMAGE::Rotate_angle(IMAGE::image)
+{
+    IMAGE::image_temp;
+    vector<vector<unsigned char> > tmpR;
+    vector<vector<unsigned char> > tmpG;
+    vector<vector<unsigned char> > tmpB;
+    tmpR.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.R;
+    tmpG.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.G;
+    tmpB.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.B;
+    int x,y,i;
+    int N1=0,N2=0;
+    int plus1=0;
+    double alpha;
+    
 
+    image_temp = IMAGE(WIDTH, HEIGHT);
+
+    for(i=-450;i<450;i++)
+        {
+
+
+    for(x = 0; x < HEIGHT; x ++){
+        for(y = 0; y < WIDTH; y++){
+            tmpR[y][x] = R[y][x];
+            tmpG[y][x] = G[y][x];
+            tmpB[y][x] = B[y][x];
+        }
+    }
+
+
+     rotate((double)i*3.1415926/1800, WIDTH, HEIGHT);
+     N2=0;
+
+      for(y =60;y < HEIGHT-60;y++)
+        {
+        N1=0;
+
+            for(x=60;x<WIDTH-60;x++)
+           {
+             if(5>=tmpR[x][y]&&5>=tmpG[x][y]&&5>=tmpB[x][y])
+                {
+                N1++;
+                }
+           }
+
+            if(0==N1)
+            {
+            N2++;
+
+            }
+        }
+
+
+
+
+        if(N2>plus1)
+        {
+        plus1=N2;
+        radians = (double)i*3.1415926/1800;
+        }
+
+
+    }
+
+   ~IMAGE(image_temp);
+   return   Rotate(radians,WIDTH,HEIGHT);
+    }
 
 
 /* EOF Image.c */
