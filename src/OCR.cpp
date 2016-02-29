@@ -55,6 +55,9 @@ int  main()
             case 3:
                 image.BlackNWhite();
                 cout<<"\"Black & White\" operation is done!\n";
+                cout<<(int)image.R[0][0]<<endl;
+                cout<<(int)image.G[0][0]<<endl;
+                cout<<(int)image.B[0][0]<<endl;
                 break;
             case 4:
                 cout<<"input degree";
@@ -84,7 +87,7 @@ void PrintMenu()
     cout<<" 1:  Load a JPG image\n";
     cout<<" 2:  Save an image in PPM and JPEG format\n";
     cout<<" 3:  Change a color image to Black & White\n";
-    cout<<" 4:  rotate image";
+    cout<<" 4:  rotate image\n";
     cout<<" 5:  Exit\n";
 }
 /*** function definitions ***/

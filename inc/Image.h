@@ -33,6 +33,8 @@ public:
     void cropIMG(int starX,int starY, int endX, int endY);
     //find the edge coordinate
     void findEdge(int edge[4]);
+    //find rotate angle 
+    double Rotate_angle();
     
 };
 

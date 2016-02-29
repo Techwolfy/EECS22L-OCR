@@ -118,9 +118,11 @@ void IMAGE::BlackNWhite()
     for (y = 0; y < HEIGHT; y++) {
         for (x = 0; x <WIDTH; x++) {
             tmp = (R[y][x] +G[y][x] + B[y][x]) / 3;
+            if(tmp<180){tmp=0;}
+            if(tmp>=180){tmp=255;}
             R[y][x]=tmp;
-            R[y][x]=tmp;  
-            R[y][x]=tmp;   
+            G[y][x]=tmp;  
+            B[y][x]=tmp;   
         }
     }
 }
@@ -178,32 +180,35 @@ void IMAGE::rotate(double radians,int offsetX, int offsetY){
     
 }
 /*---------------------add Feb 28 Donghao Feng---------------------------------------*/
-void IMAGE::Rotate_angle(IMAGE::image)
+double IMAGE::Rotate_angle()
 {
-    IMAGE::image_temp;
+    /*
+    IMAGE image_temp(WIDTH, HEIGHT);
+    
     vector<vector<unsigned char> > tmpR;
     vector<vector<unsigned char> > tmpG;
     vector<vector<unsigned char> > tmpB;
     tmpR.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.R;
     tmpG.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.G;
     tmpB.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.B;
+    */
     int x,y,i;
     int N1=0,N2=0;
     int plus1=0;
-    double alpha;
+    double alpha, radians;
     
 
-    image_temp = IMAGE(WIDTH, HEIGHT);
-
+    //image_temp = IMAGE(WIDTH, HEIGHT);
+    IMAGE image_temp(WIDTH, HEIGHT); //don't initialize just call this
     for(i=-450;i<450;i++)
         {
 
 
     for(x = 0; x < HEIGHT; x ++){
         for(y = 0; y < WIDTH; y++){
-            tmpR[y][x] = R[y][x];
-            tmpG[y][x] = G[y][x];
-            tmpB[y][x] = B[y][x];
+            image_temp.R[y][x] = R[y][x];
+            image_temp.G[y][x] = G[y][x];
+            image_temp.B[y][x] = B[y][x];
         }
     }
 
@@ -217,7 +222,7 @@ void IMAGE::Rotate_angle(IMAGE::image)
 
             for(x=60;x<WIDTH-60;x++)
            {
-             if(5>=tmpR[x][y]&&5>=tmpG[x][y]&&5>=tmpB[x][y])
+             if(5>=image_temp.R[x][y]&&5>=image_temp.G[x][y]&&5>=image_temp.B[x][y])
                 {
                 N1++;
                 }
@@ -241,9 +246,10 @@ void IMAGE::Rotate_angle(IMAGE::image)
 
 
     }
-
-   ~IMAGE(image_temp);
-   return   Rotate(radians,WIDTH,HEIGHT);
+    image_temp.~IMAGE();
+   
+  // return   Rotate(radians,WIDTH,HEIGHT); //can't call rotate here
+   return radians;
     }
 
 
