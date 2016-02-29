@@ -1,6 +1,7 @@
 //GUI.cpp
 
 //Includes
+#include <stdio.h>
 #include <gtkmm.h>
 #include "gui.h"
 
@@ -33,21 +34,39 @@ const char *GUI::uiXML ="<ui>"
 						"</ui>";
 
 //Constructor
-GUI::GUI() : box(),
+GUI::GUI() : vbox(),
+			 hbox(),
 			 menuActionGroup(Gtk::ActionGroup::create()),
-			 menuUIManager(Gtk::UIManager::create()) {
+			 menuUIManager(Gtk::UIManager::create()),
+			 textView(),
+			 textWidget(),
+			 imageData(Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 200, 200)),
+			 imageWidget(imageData) {
+	
 	//Set window details
 	set_title("EECS22L-OCR v0.0.1-alpha");
-	set_default_size(200, 200);	//TODO: Adjust this
+	set_default_size(400, 200);	//TODO: Adjust this
 
-	//Add an empty box to the window
-	add(box);
+	//Set up layout boxes
+	hbox.set_border_width(10);
+	hbox.set_spacing(10);
 
-	//Set up menu
-	setupMenu();
+	//Set up menu, image container, and text editor
+	setupMenuWidget();
+	setupImageWidget();
+	setupTextWidget();
+
+	//Add UI elements to the layout boxes
+	add(vbox);
+	vbox.pack_start(*menuWidget, Gtk::PACK_SHRINK);
+	vbox.pack_start(hbox, Gtk::PACK_SHRINK);
+	hbox.pack_start(imageWidget, Gtk::PACK_SHRINK);
+	hbox.pack_end(textWidget, Gtk::PACK_EXPAND_WIDGET);
 
 	//Display the GUI
-	box.show();
+	vbox.show();
+	hbox.show();
+	show();
 }
 
 //Destructor
@@ -57,7 +76,7 @@ GUI::~GUI() {
 
 //Functions
 //Set up menus
-void GUI::setupMenu() {
+void GUI::setupMenuWidget() {
 	//Set up menu actions
 		//Icons: https://developer.gnome.org/gtkmm/2.24/namespaceGtk_1_1Stock.html
 	menuActionGroup->add(Gtk::Action::create("MenuFile", "_File"));
@@ -82,11 +101,29 @@ void GUI::setupMenu() {
 	//Initialize keyboard shortcuts
 	add_accel_group(menuUIManager->get_accel_group());
 
-	//Build menu
-	menuUIManager->add_ui_from_string(uiXML);	//TODO: try/catch?
-	
-	//Add menu to main window
-	box.pack_start(*menuUIManager->get_widget("/MenuBar"), Gtk::PACK_SHRINK);
+	//Build and enable menu
+	menuUIManager->add_ui_from_string(uiXML);
+	menuWidget = menuUIManager->get_widget("/MenuBar");
+	menuWidget->show();
+}
+
+//Set up text box
+void GUI::setupTextWidget() {
+	textWidget.add(textView);
+	textWidget.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	textWidget.show();
+
+	//Add initial text
+	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
+	textData->set_text("Please select an image to process.\n");
+	textView.set_buffer(textData);
+	textView.show();
+}
+
+//Set up blank image
+void GUI::setupImageWidget() {
+	imageWidget.set(imageData);
+	imageWidget.show();
 }
 
 //Callbacks
