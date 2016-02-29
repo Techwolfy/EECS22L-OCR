@@ -55,9 +55,6 @@ int  main()
             case 3:
                 image.BlackNWhite();
                 cout<<"\"Black & White\" operation is done!\n";
-                cout<<(int)image.R[0][0]<<endl;
-                cout<<(int)image.G[0][0]<<endl;
-                cout<<(int)image.B[0][0]<<endl;
                 break;
             case 4:
                 cout<<"input degree";
