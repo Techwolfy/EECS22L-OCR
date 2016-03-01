@@ -183,15 +183,14 @@ void IMAGE::rotate(double radians,int offsetX, int offsetY){
 double IMAGE::Rotate_angle()
 {
     /*
-    IMAGE image_temp(WIDTH, HEIGHT);
+    IMAGE image_temp(WIDTH, HEIGHT);*/
     
     vector<vector<unsigned char> > tmpR;
     vector<vector<unsigned char> > tmpG;
     vector<vector<unsigned char> > tmpB;
-    tmpR.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.R;
-    tmpG.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.G;
-    tmpB.resize(HEIGHT,vector<unsigned char>(WIDTH)) = image_temp.B;
-    */
+    tmpR.resize(HEIGHT,vector<unsigned char>(WIDTH)) ;
+    tmpG.resize(HEIGHT,vector<unsigned char>(WIDTH)) ;
+    tmpB.resize(HEIGHT,vector<unsigned char>(WIDTH)) ;
     int x,y,i;
     int N1=0,N2=0;
     int plus1=0;
@@ -199,16 +198,16 @@ double IMAGE::Rotate_angle()
     
 
     //image_temp = IMAGE(WIDTH, HEIGHT);
-    IMAGE image_temp(WIDTH, HEIGHT); //don't initialize just call this
+//    IMAGE image_temp(WIDTH, HEIGHT); //don't initialize just call this
     for(i=-450;i<450;i++)
         {
 
 
     for(x = 0; x < HEIGHT; x ++){
         for(y = 0; y < WIDTH; y++){
-            image_temp.R[y][x] = R[y][x];
-            image_temp.G[y][x] = G[y][x];
-            image_temp.B[y][x] = B[y][x];
+            tmpR[y][x] = R[y][x];
+            tmpG[y][x] = G[y][x];
+            tmpB[y][x] = B[y][x];
         }
     }
 
@@ -222,7 +221,7 @@ double IMAGE::Rotate_angle()
 
             for(x=60;x<WIDTH-60;x++)
            {
-             if(5>=image_temp.R[x][y]&&5>=image_temp.G[x][y]&&5>=image_temp.B[x][y])
+             if(5>=tmpR[x][y]&&5>=tmpG[x][y]&&5>tmpB[x][y])
                 {
                 N1++;
                 }
@@ -244,13 +243,39 @@ double IMAGE::Rotate_angle()
         radians = (double)i*3.1415926/1800;
         }
 
-
+            
     }
-    image_temp.~IMAGE();
+    tmpR.clear();
+    tmpG.clear();
+    tmpB.clear();
    
   // return   Rotate(radians,WIDTH,HEIGHT); //can't call rotate here
    return radians;
     }
+
+/*----------------------------add March 2 Jinliang Liao---------------------------------*/
+void IMAGE::cropIMG(int starX, int starY, int endX, int endY){
+    int newW = endX - starX +1;
+    int newH = endY - starY +1;
+    unsigned char*tempGrey = new unsigned char[newW*newH];
+    int x, y,nX,nY, XY,newXY;
+    for (x = starX, nX = 0 ; x <= endX; x++,nX++) {
+        for (y = starY, nY = 0; y<= endY; y++,nY++) {
+            XY = twoD2OneD(x, y);
+            newXY = twoD2OneD(nX, nY);
+            tempGrey[newXY] = greyValue[XY];
+        }
+    }
+    
+    delete greyValue;
+    greyValue = tempGrey;
+    this->width = newW;
+    this->height = newH;
+    
+    
+    
+}
+
 
 
 /* EOF Image.c */
