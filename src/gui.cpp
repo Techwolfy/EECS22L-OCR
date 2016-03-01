@@ -1,7 +1,8 @@
 //GUI.cpp
 
 //Includes
-#include <stdio.h>
+#include <string>
+#include <fstream>
 #include <gtkmm.h>
 #include "gui.h"
 
@@ -40,12 +41,12 @@ GUI::GUI() : vbox(),
 			 menuUIManager(Gtk::UIManager::create()),
 			 textView(),
 			 textWidget(),
-			 imageData(Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 200, 200)),
+			 imageData(Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, false, 8, 385, 500)),
 			 imageWidget(imageData) {
 	
 	//Set window details
 	set_title("EECS22L-OCR v0.0.1-alpha");
-	set_default_size(400, 200);	//TODO: Adjust this
+	set_default_size(800, 500);	//TODO: Adjust this
 
 	//Set up layout boxes
 	hbox.set_border_width(10);
@@ -126,44 +127,143 @@ void GUI::setupImageWidget() {
 	imageWidget.show();
 }
 
+//Show a number input dialog
+double GUI::showNumberDialog(std::string message) {
+	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_OTHER);
+	Gtk::Entry input;
+	input.show();
+	dialog.get_vbox()->add(input);
+	//dialog.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);	//OK button is in dialog by default
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+
+	try {
+		if(dialog.run() == Gtk::RESPONSE_OK) {		
+			return std::stod(input.get_text());
+		}
+	} catch(std::exception &e) {
+		showErrorDialog(e.what());
+	}
+
+	return 0.0;
+}
+
+//Show a file input dialog
+std::string GUI::showFileDialog(std::string message, Gtk::FileChooserAction type) {
+	Gtk::FileChooserDialog dialog(message, type);
+	dialog.set_transient_for(*this);
+	dialog.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
+	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+
+	if(dialog.run() == Gtk::RESPONSE_OK) {
+		return dialog.get_filename();
+	} else {
+		return "";
+	}
+}
+
+//Show a text dialog
+void GUI::showMessageDialog(std::string message) {
+	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_OTHER);
+	dialog.run();
+}
+
+//Show an error dialog
+void GUI::showErrorDialog(std::string error) {
+	Gtk::MessageDialog dialog(*this, error, false, Gtk::MESSAGE_ERROR);
+	dialog.run();
+}
+
 //Callbacks
+//Load image from file
 void GUI::onLoadImage() {
+	std::string filename = showFileDialog("Please choose an image:", Gtk::FILE_CHOOSER_ACTION_OPEN);
+	if(filename != "") {
+		//Load image (RefPtr deletes previous image)
+		try {
+			imageData = Gdk::Pixbuf::create_from_file(filename, 500, 500, true);
+			imageWidget.set(imageData);
 
+			//Update tutorial text
+			Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
+			textData->set_text("Use the functions in the Pre-Processing menu to clean up the image.\nThen use the functions in the OCR menu to convert it to text.\n");
+			textView.set_buffer(textData);
+		} catch(std::exception &e) {
+			showErrorDialog(e.what());
+		}
+	}
 }
 
+//Save image to file
 void GUI::onSaveImage() {
-
+	std::string filename = showFileDialog("Please choose a filename:", Gtk::FILE_CHOOSER_ACTION_SAVE);
+	if(filename != "") {
+		//Add extension to filename if necessary
+		if(filename.substr(filename.length() - 4, std::string::npos) != ".jpg") {
+			filename.append(".jpg");
+		}
+		//Save image to JPEG file
+		try {
+			imageData->save(filename, "jpeg");
+		} catch(std::exception &e) {
+			showErrorDialog(e.what());
+		}
+	}
 }
 
+//Save text to file
 void GUI::onSaveText() {
-
+	std::string filename = showFileDialog("Please choose a filename:", Gtk::FILE_CHOOSER_ACTION_SAVE);
+	if(filename != "") {
+		//Save text to file
+		try {
+			std::fstream file;
+			file.open(filename, std::fstream::out | std::fstream::trunc);
+			file << textView.get_buffer()->get_text();
+			file.flush();
+			file.close();
+		} catch(std::exception &e) {
+			showErrorDialog(e.what());
+		}
+	}
 }
 
-//Closes the program
+//Close the program
 void GUI::onClose() {
 	hide();
 }
 
+//Rotate the image
 void GUI::onRotateImage() {
-
+	double degrees = showNumberDialog("Please enter the angle to rotate the image by, in degrees:");
+	if(degrees != 0.0) {
+		//TODO: Rotate image
+		showMessageDialog(std::string("Rotation degrees: ") + std::to_string((long double)degrees));
+	}
 }
 
+//Crop the image
 void GUI::onCropImage() {
-
+	//TODO
 }
 
+//Run the OCR process on the image
 void GUI::onOCR() {
-
+	//TODO
 }
 
+//Run post proccesing on the OCRed text
 void GUI::onPostProcess() {
-
+	//TODO
 }
 
+//Display a brief description of the program
 void GUI::onAbout() {
-
+	//TODO: Update message
+	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-alpha\n");
 }
 
+//Display instructions for the program
 void GUI::onHelp() {
-
+	//TODO: Update message
+	showMessageDialog("Help Dialog Stub\n");
 }
