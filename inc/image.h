@@ -1,9 +1,6 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-//Defines
-#define SLEN 80 //Maximum length of file names
-
 //Includes
 #include <vector>
 #include <string>
