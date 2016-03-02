@@ -70,7 +70,7 @@ build/test/%: test/%.cpp $(addprefix build/, $(OBJS)) | build
 .PHONY: release
 release: | all
 	tar cvzf OCR_Alpha.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md bin/ doc/
-	tar cvzf OCR_Alpha_src.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL Makefile.md bin/ doc/ inc/ src/ test/
+	tar cvzf OCR_Alpha_src.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md Makefile bin/ doc/ inc/ src/ test/
 
 
 #Clean up old build and release files
