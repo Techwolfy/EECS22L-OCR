@@ -9,7 +9,7 @@
 #include "image.h"
 
 //Constructors
-Image::Image() : Image(0, 0) {
+Image::Image() {
 
 }
 
