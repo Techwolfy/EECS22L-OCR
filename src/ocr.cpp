@@ -8,9 +8,7 @@
 
 //Constructor
 OCR::OCR(){
-
 reference = #include "averageIntensities.txt";
-
 }
 
 //Desrtructor
@@ -59,7 +57,7 @@ char OCR::charComp(IMAGE im){
   float refInt, difference, best=255.0;
   string line,value;
   intensity = avgInt(im); 
-  ifstream reference ("averageIntensities.txt");
+  ifstream reference ("../inc/averageIntensities.txt");
   if(reference.is_open()){
    while(getline (reference,line)){
    value = line.substr(0,7);
@@ -92,6 +90,6 @@ float OCR::avgInt(IMAGE im){
   return total/(3*1680.0);
 }
 
-const char *getReference{
+const char *getReference() {
   return reference;
 }
