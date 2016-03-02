@@ -6,17 +6,20 @@
 
 //Includes
 #include <vector>
+#include <gtkmm.h>
 
 class Image {
 public:
 	//Constructors
 	Image();
 	Image(int width, int height);
+	Image(Glib::RefPtr<Gdk::PixBuf> pixbuf);
 
 	//Destructor
 	~Image();
 	
 	//Functions
+	Glib::RefPtr<Gdk::PixBuf> getPixbuf();
 	int save(const char filename[SLEN]);
 	void toBW();
 	void rotate(double radians, int offsetX, int offsetY);

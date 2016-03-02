@@ -5,10 +5,8 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <gtkmm.h>
 #include "image.h"
-
-//Use STD
-using namespace std;
 
 //Constructors
 Image::Image() : Image(0, 0) {
@@ -18,9 +16,28 @@ Image::Image() : Image(0, 0) {
 Image::Image(int width, int height) : w(width),
 									  h(height) {
 	//Set initial sizes of vectors
-	r.resize(h,vector<unsigned char>(w));
-	g.resize(h,vector<unsigned char>(w));
-	b.resize(h,vector<unsigned char>(w));
+	r.resize(h, std::vector<unsigned char>(w));
+	g.resize(h, std::vector<unsigned char>(w));
+	b.resize(h, std::vector<unsigned char>(w));
+}
+
+Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf.get_width()),
+												 h(pixbuf.get_height()) {
+	//Set initial sizes of vectors
+	r.resize(h, std::vector<unsigned char>(w));
+	g.resize(h, std::vector<unsigned char>(w));
+	b.resize(h, std::vector<unsigned char>(w));
+
+	//Load pixbuf data into vectors
+	guint8 *pixels = pixbuf.get_pixels();
+	int pos = 0;
+	for(int i = 0; i < h; i++) {
+		for(int j = 0; j < w; j++) {
+			r[i][j] = pixels[pos++];
+			g[i][j] = pixels[pos++];
+			b[i][j] = pixels[pos++];
+		}
+	}
 }
 
 //Destructor
@@ -29,6 +46,24 @@ Image::~Image() {
 }
 
 //Functions
+//Create a Gdk::Pixbuf copy of the image
+Glib::RefPtr<Gdk::Pixbuf> getPixbuf() {
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+	guint8 *data = new guint8[w * h * 3];
+	int pos = 0;
+
+	for(int i = 0; i < h; i++) {
+		for(int j = 0; j < w; j++) {
+			data[pos++] = r[i][j];
+			data[pos++] = g[i][j];
+			data[pos++] = b[i][j];
+		}
+	}
+
+	pixbuf = Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, false, 8, w, h, 0);
+	delete[] data;
+}
+
 //Save the image to a file
 int Image::save(std::string filename) {
 	FILE *file;
