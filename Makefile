@@ -6,7 +6,7 @@ PKG_CONFIG_CFLAGS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.
 PKG_CONFIG_LIBS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.4 --libs)
 CFLAGS=-std=c++0x -g -Iinc $(PKG_CONFIG_CFLAGS)
 LIBS=$(PKG_CONFIG_LIBS)
-OBJS=main.o gui.o
+OBJS=gui.o image.o
 TESTS_GUI=
 TESTS_IO=
 TESTS_PREPROC=
@@ -43,27 +43,27 @@ bin/ocr: build/main.o $(addprefix build/, $(OBJS))
 test: | test-gui test-io test-preprocessing test-postprocessing
 
 .PHONY: test-gui
-test-gui: $(addprefix build/test/, $(TESTS)) | build
+test-gui: $(addprefix build/test/, $(TESTS_GUI)) | build
 	@echo "Running tests..."
 	for t in $^; do ./$$t; done
 
 .PHONY: test-io
-test-io: $(addprefix build/test/, $(TESTS)) | build
+test-io: $(addprefix build/test/, $(TESTS_IO)) | build
 	@echo "Running tests..."
 	for t in $^; do ./$$t; done
 
 .PHONY: test-preprocessing
-test-preprocessing: $(addprefix build/test/, $(TESTS)) | build
+test-preprocessing: $(addprefix build/test/, $(TESTS_PREPROC)) | build
 	@echo "Running tests..."
 	for t in $^; do ./$$t; done
 
 .PHONY: test-postprocessing
-test-postprocessing: $(addprefix build/test/, $(TESTS)) | build
+test-postprocessing: $(addprefix build/test/, $(TESTS_POSTPROC)) | build
 	@echo "Running tests..."
 	for t in $^; do ./$$t; done
 
 build/test/%: test/%.cpp $(addprefix build/, $(OBJS)) | build
-	$(CXX) -o $@ $< $(addprefix build/, $(OBJS)) $(CFLAGS)
+	$(CXX) -o $@ $< $(addprefix build/, $(OBJS)) $(CFLAGS) $(LIBS)
 
 
 #Create release archives

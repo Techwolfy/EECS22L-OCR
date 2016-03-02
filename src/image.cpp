@@ -1,10 +1,9 @@
 //Image.cpp
 
 //Includes
-#include <stdio.h>
 #include <math.h>
-#include <string>
 #include <vector>
+#include <string>
 #include <gtkmm.h>
 #include "image.h"
 
@@ -21,15 +20,15 @@ Image::Image(int width, int height) : w(width),
 	b.resize(h, std::vector<unsigned char>(w));
 }
 
-Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf.get_width()),
-												 h(pixbuf.get_height()) {
+Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf->get_width()),
+												 h(pixbuf->get_height()) {
 	//Set initial sizes of vectors
 	r.resize(h, std::vector<unsigned char>(w));
 	g.resize(h, std::vector<unsigned char>(w));
 	b.resize(h, std::vector<unsigned char>(w));
 
 	//Load pixbuf data into vectors
-	guint8 *pixels = pixbuf.get_pixels();
+	guint8 *pixels = pixbuf->get_pixels();
 	int pos = 0;
 	for(int i = 0; i < h; i++) {
 		for(int j = 0; j < w; j++) {
@@ -37,6 +36,7 @@ Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf.get_width()),
 			g[i][j] = pixels[pos++];
 			b[i][j] = pixels[pos++];
 		}
+		pos += pixbuf->get_rowstride();
 	}
 }
 
@@ -46,10 +46,21 @@ Image::~Image() {
 }
 
 //Functions
+//Get the width of the image
+int Image::getWidth() {
+	return w;
+}
+
+//Get the height of the image
+int Image::getHeight() {
+	return h;
+}
+
 //Create a Gdk::Pixbuf copy of the image
-Glib::RefPtr<Gdk::Pixbuf> getPixbuf() {
+Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	guint8 *data = new guint8[w * h * 3];
+	int size = (w * h * 3) + h;	//RGBRGBRGB\n
+	guint8 *data = new guint8[size];
 	int pos = 0;
 
 	for(int i = 0; i < h; i++) {
@@ -58,57 +69,16 @@ Glib::RefPtr<Gdk::Pixbuf> getPixbuf() {
 			data[pos++] = g[i][j];
 			data[pos++] = b[i][j];
 		}
+		data[pos++] = '\n';
 	}
 
-	pixbuf = Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, false, 8, w, h, 0);
+	pixbuf = Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, false, 8, w, h, 1);
 	delete[] data;
 }
 
 //Save the image to a file
 int Image::save(std::string filename) {
-	FILE *file;
-	std::string command;
-	std::string tmpfile;
-	tmpfile = filename;
-	
-	file = fopen(tmpfile.c_str(), "w");
-	if(!file) {
-		printDebug("\nCan't open file \"%s\" for writing!\n", filename.c_str());
-		return 1;
-	}
-	
-	fprintf(file, "P6\n");
-	fprintf(file, "%d %d\n", w, h);
-	fprintf(file, "255\n");
-
-	for(int y = 0; y < h; y++) {
-		for(int x = 0; x < w; x++) {
-			fputc(r[y][x], file);
-			fputc(g[y][x], file);
-			fputc(b[y][x], file);
-		}
-	}
-	
-	if(ferror(file)) {
-		printDebug("\nError while writing to file!\n");
-		return 2;
-	}
-	fclose(file);
-	printDebug("%s.ppm was saved successfully. \n", tmpfile.c_str());
-	
-	//Convert file to jpeg
-	command = std::string("pnmtojpeg -rgb ") + tmpfile + std::string(".ppm > ") + filename + std::string(".jpg");
-	//TODO: Bad practice! Remove system() calls.
-	if(system(command.c_str()) != 0) {
-		printDebug("\nError while converting to JPG:\nCommand \"%s\" failed!\n", command.c_str());
-		return 3;
-	}
-	printDebug("%s.jpg was stored for viewing. \n", filename.c_str());
-
-	//Delete temp file
-	command = std::string("rm ") + tmpfile;
-	system(command.c_str());
-	return 0;
+	getPixbuf()->save(filename, "jpeg");
 }
 
 void Image::toBW() {
@@ -124,14 +94,14 @@ void Image::toBW() {
 	}
 }
 
-//image rotation by radian and rotation center
+//Image rotation by radian and rotation center
 void Image::rotate(double radians, int offsetX, int offsetY) {
-	vector<vector<unsigned char>> tempR;
-	vector<vector<unsigned char>> tempG;
-	vector<vector<unsigned char>> tempB;
-	tempR.resize(h, vector<unsigned char>(w));
-	tempG.resize(h, vector<unsigned char>(w));
-	tempB.resize(h, vector<unsigned char>(w));
+	std::vector<std::vector<unsigned char>> tempR;
+	std::vector<std::vector<unsigned char>> tempG;
+	std::vector<std::vector<unsigned char>> tempB;
+	tempR.resize(h, std::vector<unsigned char>(w));
+	tempG.resize(h, std::vector<unsigned char>(w));
+	tempB.resize(h, std::vector<unsigned char>(w));
 
 	int x = 0;
 	int y = 0;
@@ -167,11 +137,13 @@ void Image::rotate(double radians, int offsetX, int offsetY) {
 	}	
 }
 
-//TODO: Crop image by 2 set of coordinate
-//TODO: Find the edge coordinate
+//Crop image by 2 set of coordinate
+void crop(int startX, int startY, int endX, int endY) {
+	//TODO: Implement
+}
 
 //Print debug messages, if DEBUG flag is set
-void printDebug(const char *format, ...) {
+void Image::printDebug(const char *format, ...) {
 #ifdef DEBUG
 	va_list args;
 	va_start(args, format);

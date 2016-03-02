@@ -13,14 +13,16 @@ public:
 	//Constructors
 	Image();
 	Image(int width, int height);
-	Image(Glib::RefPtr<Gdk::PixBuf> pixbuf);
+	Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf);
 
 	//Destructor
 	~Image();
 	
 	//Functions
-	Glib::RefPtr<Gdk::PixBuf> getPixbuf();
-	int save(const char filename[SLEN]);
+	int getWidth();
+	int getHeight();
+	Glib::RefPtr<Gdk::Pixbuf> getPixbuf();
+	int save(std::string filename);
 	void toBW();
 	void rotate(double radians, int offsetX, int offsetY);
 	void crop(int startX, int startY, int endX, int endY);
@@ -34,7 +36,6 @@ private:
 	std::vector<std::vector<unsigned char>> b;
 
 	//Functions
-	void findEdge(int edge[4]);
 	void printDebug(const char *format, ...);
 };
 
