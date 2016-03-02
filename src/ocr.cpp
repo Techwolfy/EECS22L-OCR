@@ -9,6 +9,8 @@
 //Constructor
 OCR::OCR(){
 
+reference = #include "averageIntensities.txt";
+
 }
 
 //Desrtructor
@@ -88,4 +90,8 @@ float OCR::avgInt(IMAGE im){
   }
   
   return total/(3*1680.0);
+}
+
+const char *getReference{
+  return reference;
 }
