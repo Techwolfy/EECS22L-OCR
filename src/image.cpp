@@ -1,6 +1,7 @@
 //Image.cpp
 
 //Includes
+#include <stdio.h>
 #include <math.h>
 #include <vector>
 #include <string>
@@ -35,8 +36,10 @@ Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf->get_width()),
 			r[i][j] = pixels[pos++];
 			g[i][j] = pixels[pos++];
 			b[i][j] = pixels[pos++];
+			if(pixbuf->get_has_alpha()) {
+				pos++;	//Skip the alpha byte if it's present
+			}
 		}
-		pos += pixbuf->get_rowstride();
 	}
 }
 
@@ -58,22 +61,29 @@ int Image::getHeight() {
 
 //Create a Gdk::Pixbuf copy of the image
 Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	int size = (w * h * 3) + h;	//RGBRGBRGB\n
-	guint8 *data = new guint8[size];
-	int pos = 0;
+	guint8 *data = new guint8[w * h * 4];
+	for(int i = 0; i < sizeof(data); i++) {
+		data[i] = '\0';
+	}
 
+	int pos = 0;
 	for(int i = 0; i < h; i++) {
 		for(int j = 0; j < w; j++) {
 			data[pos++] = r[i][j];
 			data[pos++] = g[i][j];
 			data[pos++] = b[i][j];
+			data[pos++] = '\0';	//No alpha
 		}
-		data[pos++] = '\n';
 	}
 
-	pixbuf = Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, false, 8, w, h, 1);
-	delete[] data;
+	//Create and return pixbuf (takes ownership of data pointer)
+	return Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, true, 8, w, h, w * 4, Gdk::Pixbuf::SlotDestroyData(&freePixbufByteArray));
+}
+
+//Free a byte array previously allocated in Image::getPixbuf()
+//Note: static is required for sigc::mem_fun(), and consts are required for static, but the passed pointer is still modified (freed)
+void Image::freePixbufByteArray(const guint8 *bytes) {
+	delete[] bytes;
 }
 
 //Save the image to a file

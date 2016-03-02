@@ -8,7 +8,7 @@ CFLAGS=-std=c++0x -g -Iinc $(PKG_CONFIG_CFLAGS)
 LIBS=$(PKG_CONFIG_LIBS)
 OBJS=gui.o image.o
 TESTS_GUI=
-TESTS_IO=
+TESTS_IO=test-imagepixbuf
 TESTS_PREPROC=
 TESTS_POSTPROC=
 
@@ -45,22 +45,22 @@ test: | test-gui test-io test-preprocessing test-postprocessing
 .PHONY: test-gui
 test-gui: $(addprefix build/test/, $(TESTS_GUI)) | build
 	@echo "Running tests..."
-	for t in $^; do ./$$t; done
+	for t in $^; do cd build/test; ../../$$t; done
 
 .PHONY: test-io
 test-io: $(addprefix build/test/, $(TESTS_IO)) | build
 	@echo "Running tests..."
-	for t in $^; do ./$$t; done
+	for t in $^; do cd build/test; ../../$$t; done
 
 .PHONY: test-preprocessing
 test-preprocessing: $(addprefix build/test/, $(TESTS_PREPROC)) | build
 	@echo "Running tests..."
-	for t in $^; do ./$$t; done
+	for t in $^; do cd build/test; ../../$$t; done
 
 .PHONY: test-postprocessing
 test-postprocessing: $(addprefix build/test/, $(TESTS_POSTPROC)) | build
 	@echo "Running tests..."
-	for t in $^; do ./$$t; done
+	for t in $^; do cd build/test; ../../$$t; done
 
 build/test/%: test/%.cpp $(addprefix build/, $(OBJS)) | build
 	$(CXX) -o $@ $< $(addprefix build/, $(OBJS)) $(CFLAGS) $(LIBS)

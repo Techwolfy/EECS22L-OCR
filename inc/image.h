@@ -6,6 +6,7 @@
 
 //Includes
 #include <vector>
+#include <string>
 #include <gtkmm.h>
 
 class Image {
@@ -22,6 +23,7 @@ public:
 	int getWidth();
 	int getHeight();
 	Glib::RefPtr<Gdk::Pixbuf> getPixbuf();
+	static void freePixbufByteArray(const guint8 *array);
 	int save(std::string filename);
 	void toBW();
 	void rotate(double radians, int offsetX, int offsetY);
