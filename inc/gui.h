@@ -35,6 +35,7 @@ private:
 	void setupMenuWidget();
 	void setupTextWidget();
 	void setupImageWidget();
+	std::string showStringDialog(std::string message);
 	double showNumberDialog(std::string message);
 	std::string showFileDialog(std::string message, Gtk::FileChooserAction type);
 	void showMessageDialog(std::string message);

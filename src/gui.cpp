@@ -46,7 +46,7 @@ GUI::GUI() : vbox(),
 	
 	//Set window details
 	set_title("EECS22L-OCR v0.0.1-alpha");
-	set_default_size(800, 500);	//TODO: Adjust this
+	set_default_size(800, 500);
 
 	//Set up layout boxes
 	hbox.set_border_width(10);
@@ -127,8 +127,8 @@ void GUI::setupImageWidget() {
 	imageWidget.show();
 }
 
-//Show a number input dialog
-double GUI::showNumberDialog(std::string message) {
+//Show a text input dialog
+std::string GUI::showStringDialog(std::string message) {
 	Gtk::MessageDialog dialog(*this, message, false, Gtk::MESSAGE_OTHER);
 	Gtk::Entry input;
 	input.show();
@@ -136,9 +136,20 @@ double GUI::showNumberDialog(std::string message) {
 	//dialog.add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);	//OK button is in dialog by default
 	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 
+	if(dialog.run() == Gtk::RESPONSE_OK) {
+		return input.get_text();
+	} else {
+		return "";
+	}
+}
+
+//Show a number input dialog
+double GUI::showNumberDialog(std::string message) {
+	std::string result = showStringDialog(message);
+
 	try {
-		if(dialog.run() == Gtk::RESPONSE_OK) {		
-			return std::stod(input.get_text());
+		if(result != "") {
+			return std::stod(result);
 		}
 	} catch(std::exception &e) {
 		showErrorDialog(e.what());
@@ -243,7 +254,11 @@ void GUI::onRotateImage() {
 
 //Crop the image
 void GUI::onCropImage() {
-	//TODO
+	std::string coordinates = showStringDialog("Please enter initial and final X and Y coordinates (comma separated; e.g. 0,0,100,100):");
+	if(coordinates != "") {
+		//TODO: Crop image
+		showMessageDialog(std::string("Crop coordinates: ") + coordinates);
+	}
 }
 
 //Run the OCR process on the image
@@ -258,12 +273,10 @@ void GUI::onPostProcess() {
 
 //Display a brief description of the program
 void GUI::onAbout() {
-	//TODO: Update message
-	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-alpha\n");
+	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-alpha\n\nDeveloped By:\nDaniel Ring\nShahrooz Maghsoudi\nZunwen Li\nJinliang Liao\nMichael Andon\nDonghao Feng\nYixiang Yan\n");
 }
 
 //Display instructions for the program
 void GUI::onHelp() {
-	//TODO: Update message
-	showMessageDialog("Help Dialog Stub\n");
+	showMessageDialog("Please see the doc/OCR_UserManual.pdf file for usage information.\n");
 }
