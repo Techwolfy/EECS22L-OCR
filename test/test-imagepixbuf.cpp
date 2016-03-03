@@ -1,3 +1,7 @@
+//Test-ImagePixbuf.cpp
+//Test for Gdk::Pixbuf <-> Image conversion
+
+//Includes
 #include <stdio.h>
 #include <assert.h>
 #include <gtkmm.h>
@@ -12,7 +16,7 @@ int main(int argc, char *argv[]) {
 
 	//Create pixbuf
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_inline(sizeof(square_pixbuf), square_pixbuf);
-	pixbuf->save("resout.jpg", "jpeg");
+	pixbuf->save("imagepixbuf-in.jpg", "jpeg");
 
 	//Test image pixbuf constructor
 	Image image(pixbuf);
@@ -22,7 +26,7 @@ int main(int argc, char *argv[]) {
 	Glib::RefPtr<Gdk::Pixbuf> imagePixbuf = image.getPixbuf();
 	assert(imagePixbuf->get_width() == image.getWidth());
 	assert(imagePixbuf->get_height() == image.getHeight());
-	imagePixbuf->save("out.jpg", "jpeg");
+	imagePixbuf->save("imagepixbuf-out.jpg", "jpeg");
 
 	//TODO: Diff output files; they should be identical
 

@@ -9,7 +9,7 @@ LIBS=$(PKG_CONFIG_LIBS)
 OBJS=gui.o image.o
 TESTS_GUI=
 TESTS_IO=test-imagepixbuf
-TESTS_PREPROC=
+TESTS_PREPROC=test-preprocessing
 TESTS_POSTPROC=
 
 #Build everything
