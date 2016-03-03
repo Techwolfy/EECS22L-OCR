@@ -49,6 +49,64 @@ Image::~Image() {
 }
 
 //Functions
+//get image value by pixel
+unsigned char Image::getR(int x, int y){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        return r[y][x];
+    }
+    return 0;
+}
+unsigned char Image::getG(int x, int y){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        return g[y][x];
+    }
+    return 0;
+}
+
+unsigned char Image::getB(int x, int y){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        return b[y][x];
+    }
+    return 0;
+}
+
+//set image value by pixel
+void setR(int x, int y, unsigned char value){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        r[y][x] = value;
+    }else{
+        cout>>"pixel out of range\n";
+    }
+}
+void setG(int x, int y, unsigned char value){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        g[y][x] = value;
+    }else{
+        cout>>"pixel out of range\n";
+    }
+}
+
+void setB(int x, int y, unsigned char value){
+    if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
+        b[y][x] = value;
+    }else{
+        cout>>"pixel out of range\n";
+    }
+}
+
+//Save the image to a file
+int Image::save(std::string filename) {
+	FILE *file;
+	std::string command;
+	std::string tmpfile;
+	tmpfile = filename;
+	
+	file = fopen(tmpfile.c_str(), "w");
+	if(!file) {
+		printDebug("\nCan't open file \"%s\" for writing!\n", filename.c_str());
+		return 1;
+        
+        
 //Get the width of the image
 int Image::getWidth() {
 	return w;
@@ -74,6 +132,7 @@ Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
 			data[pos++] = b[i][j];
 			data[pos++] = '\0';	//No alpha
 		}
+
 	}
 
 	//Create and return pixbuf (takes ownership of data pointer)
@@ -147,10 +206,67 @@ void Image::rotate(double radians, int offsetX, int offsetY) {
 	}	
 }
 
-//Crop image by 2 set of coordinate
-void crop(int startX, int startY, int endX, int endY) {
-	//TODO: Implement
+//TODO: Crop image by 2 set of coordinate
+void Image::crop(int startX, int startY, int endX, int endY){
+    
+    
+    int newW = endX - startX +1;
+    
+    int newH = endY - startY +1;
+    
+    int x, y ,i, j;
+    
+    std::vector<std::vector<unsigned char> > tempR;
+    std::vector<std::vector<unsigned char> > tempG;
+    std::vector<std::vector<unsigned char> > tempB;
+    tempR.resize(newH, std::vector<unsigned char>(newW));
+    tempG.resize(newH, std::vector<unsigned char>(newW));
+    tempB.resize(newH, std::vector<unsigned char>(newW));
+
+    
+    
+    for (y = startY, j = 0; y< endY; y++,j++) {
+        for (x = startX; x< endX; x++,i++) {
+            
+                tempR[j][i] = r[y][x];
+                tempG[j][i] = g[y][x];
+                tempB[j][i] = b[y][x];
+            
+        }
+        
+    }
+    
+    r.clear();
+    g.clear();
+    b.clear();
+    
+    r.resize(newH, std::vector<unsigned char>(newW));
+    g.resize(newH, std::vector<unsigned char>(newW));
+    b.resize(newH, std::vector<unsigned char>(newW));
+    
+    
+    for (y = 0; y< newH; y++) {
+        for (x = 0; x< newW; x++) {
+            
+            r[y][x] = tempR[y][x];
+            g[y][x] = tempG[y][x];
+            b[y][x] = tempB[y][x];
+            
+        }
+        
+    }
+    
+    this->w = newW;
+    
+    this->h = newH;
+    
+    
 }
+
+
+//TODO: Find the edge coordinate
+
+
 
 //Print debug messages, if DEBUG flag is set
 void Image::printDebug(const char *format, ...) {
