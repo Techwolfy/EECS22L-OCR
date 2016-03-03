@@ -24,8 +24,14 @@ public:
 	int save(std::string filename);
 	void toBW();
 	void rotate(double radians, int offsetX, int offsetY);
-	void crop(int startX, int startY, int endX, int endY);
-
+  void StainRemoval();
+  void crop(int startX, int startY, int endX, int endY);
+  unsigned char getR(int x, int y);
+  unsigned char getG(int x, int y);
+  unsigned char getB(int x, int y);
+  void setR(int x, int y, unsigned char value);
+  void setG(int x, int y, unsigned char value);
+  void setB(int x, int y, unsigned char value);
 private:
 	//Variables
 	int w;
