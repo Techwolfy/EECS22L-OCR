@@ -3,6 +3,7 @@
 //Includes
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <gtkmm.h>
 #include "gui.h"
 
@@ -289,12 +290,12 @@ void GUI::onCropImage() {
 		int yEnd = 0;
 		try {
 			//Get integers from CSV string, destructively
-			xStart = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
-			coordinates = coordinates.substr(0, coordinates.find(','));
-			yStart = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
-			coordinates = coordinates.substr(0, coordinates.find(','));
-			xEnd = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
-			coordinates = coordinates.substr(0, coordinates.find(','));
+			xStart = std::stoi(coordinates.substr(0, coordinates.find(',')));
+			coordinates = coordinates.substr(coordinates.find(',') + 1);
+			yStart = std::stoi(coordinates.substr(0, coordinates.find(',')));
+			coordinates = coordinates.substr(coordinates.find(',') + 1);
+			xEnd = std::stoi(coordinates.substr(0, coordinates.find(',')));
+			coordinates = coordinates.substr(coordinates.find(',') + 1);
 			yEnd = std::stoi(coordinates);
 
 			//Crop image
