@@ -71,14 +71,14 @@ unsigned char Image::getB(int x, int y){
 }
 
 //set image value by pixel
-void setR(int x, int y, unsigned char value){
+void Image::setR(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         r[y][x] = value;
     }else{
         cout>>"pixel out of range\n";
     }
 }
-void setG(int x, int y, unsigned char value){
+void Image::setG(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         g[y][x] = value;
     }else{
@@ -86,7 +86,7 @@ void setG(int x, int y, unsigned char value){
     }
 }
 
-void setB(int x, int y, unsigned char value){
+void Image::setB(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         b[y][x] = value;
     }else{
