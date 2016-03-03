@@ -99,7 +99,7 @@ Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
 			data[pos++] = r[i][j];
 			data[pos++] = g[i][j];
 			data[pos++] = b[i][j];
-			data[pos++] = '\0';	//No alpha
+			data[pos++] = '\xFF';	//No alpha (255 = solid color)
 		}
 
 	}

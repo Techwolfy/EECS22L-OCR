@@ -3,8 +3,8 @@
 //Includes
 #include <string>
 #include <fstream>
-#include <iostream>
 #include <gtkmm.h>
+#include "image.h"
 #include "gui.h"
 
 //Constants
