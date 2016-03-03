@@ -6,8 +6,8 @@
 #include <vector>
 #include <string>
 #include <gtkmm.h>
-#include "image.h"
-
+#include "../inc/image.h"
+//using namespace std;
 //Constructors
 Image::Image() {
 
@@ -75,14 +75,14 @@ void Image::setR(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         r[y][x] = value;
     }else{
-        cout>>"pixel out of range\n";
+        //cout<<"pixel out of range\n";
     }
 }
 void Image::setG(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         g[y][x] = value;
     }else{
-        cout>>"pixel out of range\n";
+        //cout<<"pixel out of range\n";
     }
 }
 
@@ -90,12 +90,12 @@ void Image::setB(int x, int y, unsigned char value){
     if (this->w >x && this->h > y && x >=0 && y>= 0 ) {
         b[y][x] = value;
     }else{
-        cout>>"pixel out of range\n";
+        //cout<<"pixel out of range\n";
     }
 }
 
 //Save the image to a file
-int Image::save(std::string filename) {
+/*int Image::save(std::string filename) {
 	FILE *file;
 	std::string command;
 	std::string tmpfile;
@@ -106,7 +106,8 @@ int Image::save(std::string filename) {
 		printDebug("\nCan't open file \"%s\" for writing!\n", filename.c_str());
 		return 1;
         
-        
+      }
+      }  */
 //Get the width of the image
 int Image::getWidth() {
 	return w;
@@ -149,7 +150,7 @@ void Image::freePixbufByteArray(const guint8 *bytes) {
 int Image::save(std::string filename) {
 	getPixbuf()->save(filename, "jpeg");
 }
-
+//change the image color to black and white and remove some stain and winkle
 void Image::toBW() {
 	unsigned int tmp;
 	
@@ -162,7 +163,42 @@ void Image::toBW() {
 		}
 	}
 }
+//remove stain
+void Image::StainRemoval()
+{
+int x, y;
+double tmpA,tmpB,tmpC;
 
+  for (y = 0; y < h; y++) {
+        for (x = 0; x <w; x++) {
+
+            
+         /* cout<<(int)R[y][x];
+          cout<<(int)G[y][x];  
+          cout<<(int)B[y][x]<<endl;
+          */ 
+
+          if(r[y][x]>160&&(r[y][x]-b[y][x])>20&&(r[y][x]-g[y][x])>16){
+          r[y][x]=255;
+          g[y][x]=255;
+          b[y][x]=255;
+          }
+
+          
+          tmpA=(r[y][x]-g[y][x]);
+          tmpB=(r[y][x]-b[y][x]);
+          tmpC=(g[y][x]-b[y][x]);
+          
+          if( (abs(tmpA)>50)||(abs(tmpB)>50)||(abs(tmpC)>50) ){
+
+          r[y][x]=255;
+          g[y][x]=255;
+          b[y][x]=255;
+          }
+        }
+        
+  }
+}
 //Image rotation by radian and rotation center
 void Image::rotate(double radians, int offsetX, int offsetY) {
 	std::vector<std::vector<unsigned char>> tempR;
@@ -206,11 +242,29 @@ void Image::rotate(double radians, int offsetX, int offsetY) {
 	}	
 }
 
-//TODO: Crop image by 2 set of coordinate
-void Image::crop(int startX, int startY, int endX, int endY){
-    
-    
-    int newW = endX - startX +1;
+
+//Crop image by 2 set of coordinate
+void Image::crop(int startX, int startY, int endX, int endY){ 
+/*
+       int newW = endX - startX +1;        
+       int newH = endY - startY +1;        
+       int x, y;            
+       for (y = HEIGHT-1; y>=0; y--) {        
+       for (x = WIDTH-1; x>=0; x--) {            
+       if (x>startX &&x < endX && y> startY && y< endY) {               
+                
+         }else{
+            R[y].erase(R[y].begin()+x);               
+           G[y].erase(G[y].begin()+x);                
+           B[y].erase(B[y].begin()+x); 
+         }                    
+         }            
+         }        
+         this->WIDTH = newW;       
+         this->HEIGHT = newH;  
+   */
+   
+int newW = endX - startX +1;
     
     int newH = endY - startY +1;
     
@@ -222,11 +276,10 @@ void Image::crop(int startX, int startY, int endX, int endY){
     tempR.resize(newH, std::vector<unsigned char>(newW));
     tempG.resize(newH, std::vector<unsigned char>(newW));
     tempB.resize(newH, std::vector<unsigned char>(newW));
-
     
     
     for (y = startY, j = 0; y< endY; y++,j++) {
-        for (x = startX; x< endX; x++,i++) {
+        for (x = startX,i=0; x< endX; x++,i++) {
             
                 tempR[j][i] = r[y][x];
                 tempG[j][i] = g[y][x];
@@ -239,7 +292,6 @@ void Image::crop(int startX, int startY, int endX, int endY){
     r.clear();
     g.clear();
     b.clear();
-    
     r.resize(newH, std::vector<unsigned char>(newW));
     g.resize(newH, std::vector<unsigned char>(newW));
     b.resize(newH, std::vector<unsigned char>(newW));
@@ -259,9 +311,11 @@ void Image::crop(int startX, int startY, int endX, int endY){
     this->w = newW;
     
     this->h = newH;
-    
-    
-}
+               
+         }
+
+
+
 
 
 //TODO: Find the edge coordinate
