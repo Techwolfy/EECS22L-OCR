@@ -15,23 +15,23 @@ public:
 
 	//Destructor
 	~Image();
+
+	//Enums
+	enum PixelColor {R, G, B};
 	
 	//Functions
 	int getWidth();
 	int getHeight();
+	unsigned char getPixel(int x, int y, PixelColor color);
+	void setPixel(int x, int y, PixelColor color, unsigned char value);
 	Glib::RefPtr<Gdk::Pixbuf> getPixbuf();
 	static void freePixbufByteArray(const guint8 *array);
 	int save(std::string filename);
-	void toBW();
+	void toBW(unsigned char threshold = 20);
 	void rotate(double radians, int offsetX, int offsetY);
-  void StainRemoval();
-  void crop(int startX, int startY, int endX, int endY);
-  unsigned char getR(int x, int y);
-  unsigned char getG(int x, int y);
-  unsigned char getB(int x, int y);
-  void setR(int x, int y, unsigned char value);
-  void setG(int x, int y, unsigned char value);
-  void setB(int x, int y, unsigned char value);
+	void crop(int startX, int startY, int endX, int endY);
+	void removeStains();
+
 private:
 	//Variables
 	int w;
@@ -39,9 +39,6 @@ private:
 	std::vector<std::vector<unsigned char>> r;
 	std::vector<std::vector<unsigned char>> g;
 	std::vector<std::vector<unsigned char>> b;
-
-	//Functions
-	void printDebug(const char *format, ...);
 };
 
 #endif	//IMAGE_H
