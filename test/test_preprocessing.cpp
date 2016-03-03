@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 // image.crop(350, 380, 1620, 1395);
   image.crop(0,0,50,50);
 	cout<<"crop  operation is done!"<<endl;
-	image.save("preprocessing");
+	image.save("preprocessing.jpg");
 	cout<<"image has been saved"<<endl;
     return 0;
 }
