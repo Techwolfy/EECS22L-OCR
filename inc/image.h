@@ -27,10 +27,10 @@ public:
 	Glib::RefPtr<Gdk::Pixbuf> getPixbuf();
 	static void freePixbufByteArray(const guint8 *array);
 	int save(std::string filename);
-	void toBW(unsigned char threshold = 20);
-	void rotate(double radians, int offsetX, int offsetY);
-	void crop(int startX, int startY, int endX, int endY);
-	void removeStains();
+	Image* toBW(unsigned char threshold = 20);
+	Image* rotate(double radians, int offsetX, int offsetY);
+	Image* crop(int startX, int startY, int endX, int endY);
+	Image* removeStains();
 
 private:
 	//Variables

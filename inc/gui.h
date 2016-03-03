@@ -3,6 +3,7 @@
 
 #include <string>
 #include <gtkmm.h>
+#include "image.h"
 
 class GUI : public Gtk::Window {
 public:
@@ -30,11 +31,15 @@ private:
 	//Image Widget
 	Glib::RefPtr<Gdk::Pixbuf> imageData;
 	Gtk::Image imageWidget;
+	//OCR Image Data
+	Glib::RefPtr<Gdk::Pixbuf> ocrImage;
+	Glib::RefPtr<Gdk::Pixbuf> oldImage;
 
 	//Functions
 	void setupMenuWidget();
 	void setupTextWidget();
 	void setupImageWidget();
+	void updateImage(Glib::RefPtr<Gdk::Pixbuf> image);
 	std::string showStringDialog(std::string message);
 	double showNumberDialog(std::string message);
 	std::string showFileDialog(std::string message, Gtk::FileChooserAction type);
@@ -48,6 +53,9 @@ private:
 	void onClose();
 	void onRotateImage();
 	void onCropImage();
+	void onRemoveColor();
+	void onRemoveStains();
+	void onUndo();
 	void onOCR();
 	void onPostProcess();
 	void onHelp();

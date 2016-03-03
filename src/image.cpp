@@ -119,8 +119,8 @@ int Image::save(std::string filename) {
 	getPixbuf()->save(filename, "jpeg");
 }
 
-//change the image color to black and white and remove some stain and winkle
-void Image::toBW(unsigned char threshold /* = 20 */) {
+//Change the image color to black and white and remove some stain and winkle
+Image* Image::toBW(unsigned char threshold /* = 20 */) {
 	for(int y = 0; y < h; y++) {
 		for(int x = 0; x < w; x++) {
 			if(((r[y][x] + g[y][x] + b[y][x]) / 3) < threshold) {
@@ -134,10 +134,12 @@ void Image::toBW(unsigned char threshold /* = 20 */) {
 			}
 		}
 	}
+
+	return this;
 }
 
 //Image rotation by radian and rotation center
-void Image::rotate(double radians, int offsetX, int offsetY) {
+Image* Image::rotate(double radians, int offsetX, int offsetY) {
 	std::vector<std::vector<unsigned char>> tempR;
 	std::vector<std::vector<unsigned char>> tempG;
 	std::vector<std::vector<unsigned char>> tempB;
@@ -176,12 +178,14 @@ void Image::rotate(double radians, int offsetX, int offsetY) {
 				b[dY][dX] = tempB[j][i];
 			}
 		}
-	}	
+	}
+
+	return this;
 }
 
 
 //Crop image by 2 set of coordinate
-void Image::crop(int startX, int startY, int endX, int endY){ 
+Image* Image::crop(int startX, int startY, int endX, int endY){ 
 	w = endX - startX + 1;
 	h = endY - startY + 1;
 	
@@ -214,10 +218,12 @@ void Image::crop(int startX, int startY, int endX, int endY){
 			b[y][x] = tempB[y][x];
 		}
 	}
+
+	return this;
 }
 
 //Remove stains
-void Image::removeStains() {
+Image* Image::removeStains() {
 	double tmpA = 0.0;
 	double tmpB = 0.0;
 	double tmpC = 0.0;
@@ -241,4 +247,6 @@ void Image::removeStains() {
 			}
 		}	
 	}
+
+	return this;
 }

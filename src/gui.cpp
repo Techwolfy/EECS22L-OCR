@@ -20,6 +20,10 @@ const char *GUI::uiXML ="<ui>"
 						"		<menu action='MenuPreProc'>"
 						"			<menuitem action='RotateImage'/>"
 						"			<menuitem action='CropImage'/>"
+						"			<menuitem action='DeColorImage'/>"
+						"			<menuitem action='DeStainImage'/>"
+						"			<separator/>"
+						"			<menuitem action='Undo'/>"
 						"		</menu>"
 						"		<menu action='MenuOCR'>"
 						"			<menuitem action='RunOCR'/>"
@@ -45,7 +49,7 @@ GUI::GUI() : vbox(),
 			 imageWidget(imageData) {
 	
 	//Set window details
-	set_title("EECS22L-OCR v0.0.1-alpha");
+	set_title("EECS22L-OCR v0.0.1-beta");
 	set_default_size(800, 500);
 
 	//Set up layout boxes
@@ -88,10 +92,13 @@ void GUI::setupMenuWidget() {
 	menuActionGroup->add(Gtk::Action::create("MenuPreProc", "_Pre-Processing"));
 	menuActionGroup->add(Gtk::Action::create("RotateImage", Gtk::Stock::ORIENTATION_PORTRAIT, "Rotate Image"), sigc::mem_fun(*this, &GUI::onRotateImage));
 	menuActionGroup->add(Gtk::Action::create("CropImage", Gtk::Stock::PAGE_SETUP, "Crop Image"), sigc::mem_fun(*this, &GUI::onCropImage));
+	menuActionGroup->add(Gtk::Action::create("DeColorImage", Gtk::Stock::COLOR_PICKER, "Remove Color"), sigc::mem_fun(*this, &GUI::onRemoveColor));
+	menuActionGroup->add(Gtk::Action::create("DeStainImage", Gtk::Stock::SELECT_COLOR, "Remove Stains"), sigc::mem_fun(*this, &GUI::onRemoveStains));
+	menuActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"), sigc::mem_fun(*this, &GUI::onUndo));
 	menuActionGroup->add(Gtk::Action::create("MenuOCR", "_OCR"));
 	menuActionGroup->add(Gtk::Action::create("RunOCR", Gtk::Stock::EXECUTE, "Run OCR"), sigc::mem_fun(*this, &GUI::onOCR));
 	menuActionGroup->add(Gtk::Action::create("MenuPostProc", "_Post-Processing"));
-	menuActionGroup->add(Gtk::Action::create("PostProcessText", Gtk::Stock::BOLD, "Post-Process Text"), sigc::mem_fun(*this, &GUI::onPostProcess));
+	menuActionGroup->add(Gtk::Action::create("PostProcessText", Gtk::Stock::SELECT_FONT, "Post-Process Text"), sigc::mem_fun(*this, &GUI::onPostProcess));
 	menuActionGroup->add(Gtk::Action::create("MenuHelp", "_Help"));
 	menuActionGroup->add(Gtk::Action::create("Help", Gtk::Stock::HELP), sigc::mem_fun(*this, &GUI::onHelp));
 	menuActionGroup->add(Gtk::Action::create("About", Gtk::Stock::ABOUT), sigc::mem_fun(*this, &GUI::onAbout));
@@ -125,6 +132,22 @@ void GUI::setupTextWidget() {
 void GUI::setupImageWidget() {
 	imageWidget.set(imageData);
 	imageWidget.show();
+}
+
+//Update the displayed image
+void GUI::updateImage(Glib::RefPtr<Gdk::Pixbuf> image) {
+	image->save("in.png", "png");
+	oldImage = ocrImage;
+	ocrImage = image;
+	if(ocrImage->get_width() > ocrImage->get_height()) {
+		imageData = ocrImage->scale_simple(500, 500 * (ocrImage->get_height() / ocrImage->get_width()), Gdk::INTERP_BILINEAR);
+	} else if(ocrImage->get_height() > ocrImage->get_width()) {
+		imageData = ocrImage->scale_simple(500 * (ocrImage->get_width() / ocrImage->get_height()), 500, Gdk::INTERP_BILINEAR);
+	} else {
+		imageData = ocrImage->scale_simple(500, 500, Gdk::INTERP_BILINEAR);
+	}
+	imageData->save("out.png", "png");
+	imageWidget.set(imageData);
 }
 
 //Show a text input dialog
@@ -189,10 +212,13 @@ void GUI::showErrorDialog(std::string error) {
 void GUI::onLoadImage() {
 	std::string filename = showFileDialog("Please choose an image:", Gtk::FILE_CHOOSER_ACTION_OPEN);
 	if(filename != "") {
-		//Load image (RefPtr deletes previous image)
 		try {
+			//Load GUI image data (RefPtr deletes previous image)
 			imageData = Gdk::Pixbuf::create_from_file(filename, 500, 500, true);
 			imageWidget.set(imageData);
+
+			//Load OCR image data (RefPtr deletes previous image)
+			ocrImage = Gdk::Pixbuf::create_from_file(filename);
 
 			//Update tutorial text
 			Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
@@ -214,7 +240,7 @@ void GUI::onSaveImage() {
 		}
 		//Save image to JPEG file
 		try {
-			imageData->save(filename, "jpeg");
+			ocrImage->save(filename, "jpeg");
 		} catch(std::exception &e) {
 			showErrorDialog(e.what());
 		}
@@ -247,8 +273,8 @@ void GUI::onClose() {
 void GUI::onRotateImage() {
 	double degrees = showNumberDialog("Please enter the angle to rotate the image by, in degrees:");
 	if(degrees != 0.0) {
-		//TODO: Rotate image
-		showMessageDialog(std::string("Rotation degrees: ") + std::to_string((long double)degrees));
+		//Rotate image
+		updateImage(Image(ocrImage).rotate(degrees, 0, 0)->getPixbuf());
 	}
 }
 
@@ -256,24 +282,58 @@ void GUI::onRotateImage() {
 void GUI::onCropImage() {
 	std::string coordinates = showStringDialog("Please enter initial and final X and Y coordinates (comma separated; e.g. 0,0,100,100):");
 	if(coordinates != "") {
-		//TODO: Crop image
-		showMessageDialog(std::string("Crop coordinates: ") + coordinates);
+		//Parse input
+		int xStart = 0;
+		int yStart = 0;
+		int xEnd = 0;
+		int yEnd = 0;
+		try {
+			//Get integers from CSV string, destructively
+			xStart = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
+			coordinates = coordinates.substr(0, coordinates.find(','));
+			yStart = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
+			coordinates = coordinates.substr(0, coordinates.find(','));
+			xEnd = std::stoi(coordinates.substr(0, coordinates.find(',') - 1));
+			coordinates = coordinates.substr(0, coordinates.find(','));
+			yEnd = std::stoi(coordinates);
+
+			//Crop image
+			updateImage(Image(ocrImage).crop(xStart, yStart, xEnd, yEnd)->getPixbuf());
+		} catch(std::exception &e) {
+			showErrorDialog(e.what());
+		}
 	}
+}
+
+//Convert image to black and white
+void GUI::onRemoveColor() {
+	updateImage(Image(ocrImage).toBW()->getPixbuf());
+}
+
+//Remove stains from image
+void GUI::onRemoveStains() {
+	updateImage(Image(ocrImage).removeStains()->getPixbuf());
+}
+
+void GUI::onUndo() {
+	updateImage(oldImage);
 }
 
 //Run the OCR process on the image
 void GUI::onOCR() {
 	//TODO
+	showMessageDialog("onOCR() function stub\n");
 }
 
 //Run post proccesing on the OCRed text
 void GUI::onPostProcess() {
 	//TODO
+	showMessageDialog("onPostProcess() function stub\n");
 }
 
 //Display a brief description of the program
 void GUI::onAbout() {
-	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-alpha\n\nDeveloped By:\nDaniel Ring\nShahrooz Maghsoudi\nZunwen Li\nJinliang Liao\nMichael Andon\nDonghao Feng\nYixiang Yan\n");
+	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-beta\n\nDeveloped By:\nDaniel Ring\nShahrooz Maghsoudi\nZunwen Li\nJinliang Liao\nMichael Andon\nDonghao Feng\nYixiang Yan\n");
 }
 
 //Display instructions for the program
