@@ -17,6 +17,9 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/stock.h>
+#include <cairomm/refptr.h>
+#include <cairomm/surface.h>
+#include <cairomm/context.h>
 #include "image.h"
 #include "gui.h"
 
@@ -150,17 +153,15 @@ void GUI::setupImageWidget() {
 
 //Update the displayed image
 void GUI::updateImage(Glib::RefPtr<Gdk::Pixbuf> image) {
-	image->save("in.png", "png");
 	oldImage = ocrImage;
 	ocrImage = image;
 	if(ocrImage->get_width() > ocrImage->get_height()) {
-		imageData = ocrImage->scale_simple(500, 500 * (ocrImage->get_height() / ocrImage->get_width()), Gdk::INTERP_BILINEAR);
+		imageData = ocrImage->scale_simple(500, 500 * (ocrImage->get_height() / (float)ocrImage->get_width()), Gdk::INTERP_BILINEAR);
 	} else if(ocrImage->get_height() > ocrImage->get_width()) {
-		imageData = ocrImage->scale_simple(500 * (ocrImage->get_width() / ocrImage->get_height()), 500, Gdk::INTERP_BILINEAR);
+		imageData = ocrImage->scale_simple(500 * (ocrImage->get_width() / (float)ocrImage->get_height()), 500, Gdk::INTERP_BILINEAR);
 	} else {
 		imageData = ocrImage->scale_simple(500, 500, Gdk::INTERP_BILINEAR);
 	}
-	imageData->save("out.png", "png");
 	imageWidget.set(imageData);
 }
 
@@ -288,7 +289,7 @@ void GUI::onRotateImage() {
 	double degrees = showNumberDialog("Please enter the angle to rotate the image by, in degrees:");
 	if(degrees != 0.0) {
 		//Rotate image
-		updateImage(Image(ocrImage).rotate(degrees, 0, 0)->getPixbuf());
+		updateImage(Image(ocrImage).rotate(degrees)->getPixbuf());
 	}
 }
 
@@ -312,7 +313,7 @@ void GUI::onCropImage() {
 			yEnd = std::stoi(coordinates);
 
 			//Crop image
-			updateImage(Image(ocrImage).crop(xStart, yStart, xEnd, yEnd)->getPixbuf());
+			updateImage(Gdk::Pixbuf::create_subpixbuf(ocrImage, xStart, xEnd, xEnd - xStart, yEnd - yStart));
 		} catch(std::exception &e) {
 			showErrorDialog(e.what());
 		}

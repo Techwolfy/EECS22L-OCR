@@ -29,7 +29,7 @@ public:
 	static void freePixbufByteArray(const guint8 *array);
 	int save(std::string filename);
 	Image* toBW(unsigned char threshold = 20);
-	Image* rotate(double radians, int offsetX, int offsetY);
+	Image* rotate(double degrees);
 	Image* crop(int startX, int startY, int endX, int endY);
 	Image* removeStains();
 

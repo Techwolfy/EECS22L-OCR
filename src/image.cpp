@@ -138,8 +138,8 @@ Image* Image::toBW(unsigned char threshold /* = 20 */) {
 	return this;
 }
 
-//Image rotation by radian and rotation center
-Image* Image::rotate(double radians, int offsetX, int offsetY) {
+//Image rotation by degrees and rotation center
+Image* Image::rotate(double degrees) {
 	std::vector<std::vector<unsigned char>> tempR;
 	std::vector<std::vector<unsigned char>> tempG;
 	std::vector<std::vector<unsigned char>> tempB;
@@ -147,6 +147,9 @@ Image* Image::rotate(double radians, int offsetX, int offsetY) {
 	tempG.resize(h, std::vector<unsigned char>(w));
 	tempB.resize(h, std::vector<unsigned char>(w));
 
+	double radians = degrees * 180 / 3.14159265;
+	int offsetX = w / 2;
+	int offsetY = h / 2;
 	int x = 0;
 	int y = 0;
 	int dX = 0;
