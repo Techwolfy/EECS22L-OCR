@@ -1,13 +1,13 @@
 //Image.cpp
 
 //Includes
-#include <stdio.h>
 #include <math.h>
 #include <vector>
 #include <string>
-#include <gtkmm.h>
-#include "../inc/image.h"
-//using namespace std;
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
+#include "image.h"
+
 //Constructors
 Image::Image() {
 
@@ -40,6 +40,7 @@ Image::Image(Glib::RefPtr<Gdk::Pixbuf> pixbuf) : w(pixbuf->get_width()),
 				pos++;	//Skip the alpha byte if it's present
 			}
 		}
+		pos += pixbuf->get_rowstride() - (pixbuf->get_has_alpha() ? w * 4 : w * 3);	//Compensate for weird rowstrides
 	}
 }
 
@@ -88,7 +89,7 @@ void Image::setPixel(int x, int y, PixelColor color, unsigned char value) {
 
 //Create a Gdk::Pixbuf copy of the image
 Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
-	guint8 *data = new guint8[w * h * 4];
+	guint8 *data = new guint8[w * h * 3];
 	for(int i = 0; i < sizeof(data); i++) {
 		data[i] = '\0';
 	}
@@ -99,13 +100,12 @@ Glib::RefPtr<Gdk::Pixbuf> Image::getPixbuf() {
 			data[pos++] = r[i][j];
 			data[pos++] = g[i][j];
 			data[pos++] = b[i][j];
-			data[pos++] = '\xFF';	//No alpha (255 = solid color)
+			//data[pos++] = '\xFF';	//No alpha (255 = solid color)
 		}
-
 	}
 
 	//Create and return pixbuf (takes ownership of data pointer)
-	return Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, true, 8, w, h, w * 4, Gdk::Pixbuf::SlotDestroyData(&freePixbufByteArray));
+	return Gdk::Pixbuf::create_from_data(data, Gdk::Colorspace::COLORSPACE_RGB, false, 8, w, h, w * 3, Gdk::Pixbuf::SlotDestroyData(&freePixbufByteArray));
 }
 
 //Free a byte array previously allocated in Image::getPixbuf()

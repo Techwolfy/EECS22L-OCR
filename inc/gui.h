@@ -2,7 +2,17 @@
 #define GUI_H
 
 #include <string>
-#include <gtkmm.h>
+#include <gtkmm/window.h>
+#include <gtkmm/box.h>
+#include <glibmm/refptr.h>
+#include <gtkmm/actiongroup.h>
+#include <gtkmm/uimanager.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/image.h>
+#include <gdkmm/pixbuf.h>
+#include <gtkmm/filechooserdialog.h>
 #include "image.h"
 
 class GUI : public Gtk::Window {

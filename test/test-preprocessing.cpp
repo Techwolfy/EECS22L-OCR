@@ -4,7 +4,9 @@
 //Includes
 #include <stdio.h>
 #include <assert.h>
-#include <gtkmm.h>
+#include <gtkmm/main.h>
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
 #include "image.h"
 
 //Load raw pixbuf resource at compile time

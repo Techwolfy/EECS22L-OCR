@@ -4,7 +4,8 @@
 //Includes
 #include <vector>
 #include <string>
-#include <gtkmm.h>
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
 
 class Image {
 public:

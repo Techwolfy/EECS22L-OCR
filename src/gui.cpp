@@ -3,7 +3,20 @@
 //Includes
 #include <string>
 #include <fstream>
-#include <gtkmm.h>
+#include <gtkmm/window.h>
+#include <gtkmm/box.h>
+#include <glibmm/refptr.h>
+#include <gtkmm/actiongroup.h>
+#include <gtkmm/uimanager.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/image.h>
+#include <gdkmm/pixbuf.h>
+#include <gtkmm/messagedialog.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/filechooserdialog.h>
+#include <gtkmm/stock.h>
 #include "image.h"
 #include "gui.h"
 

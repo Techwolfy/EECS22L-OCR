@@ -4,11 +4,14 @@
 //Includes
 #include <stdio.h>
 #include <assert.h>
-#include <gtkmm.h>
+#include <gtkmm/main.h>
+#include <glibmm/refptr.h>
+#include <gdkmm/pixbuf.h>
 #include "image.h"
 
-//Load raw pixbuf resource at compile time
+//Load raw pixbuf resources at compile time
 #include "square.pixbuf"
+#include "helloworld.pixbuf"
 
 int main(int argc, char *argv[]) {
 	//Set up GtkMM
@@ -28,8 +31,13 @@ int main(int argc, char *argv[]) {
 	assert(imagePixbuf->get_height() == image.getHeight());
 	imagePixbuf->save("imagepixbuf-out.jpg", "jpeg");
 
+	//Test hello world image containing text
+	Glib::RefPtr<Gdk::Pixbuf> textPixbuf = Gdk::Pixbuf::create_from_inline(sizeof(helloworld_pixbuf), helloworld_pixbuf);
+	textPixbuf->save("imagepixbuf-text-in.jpg", "jpeg");
+	Image(textPixbuf).getPixbuf()->save("imagepixbuf-text-out.jpg", "jpeg");
+
 	//TODO: Diff output files; they should be identical
 
-	printf("Image to Pixbuf conversion test passed!\n");
+	printf("Image to Pixbuf conversion test complete. CHECK OUTPUT FILE FOR RESULT!\n");
 	return 0;
 }

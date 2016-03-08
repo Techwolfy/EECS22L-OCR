@@ -1,4 +1,4 @@
-#include <gtkmm.h>
+#include <gtkmm/main.h>
 #include "gui.h"
 
 int main(int argc, char *argv[]) {
