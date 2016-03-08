@@ -147,7 +147,7 @@ Image* Image::rotate(double degrees) {
 	tempG.resize(h, std::vector<unsigned char>(w));
 	tempB.resize(h, std::vector<unsigned char>(w));
 
-	double radians = degrees * 180 / 3.14159265;
+	double radians = degrees * 3.1415826 / 180;
 	int offsetX = w / 2;
 	int offsetY = h / 2;
 	int x = 0;

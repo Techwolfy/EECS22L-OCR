@@ -21,8 +21,10 @@
 #include <cairomm/refptr.h>
 #include <cairomm/surface.h>
 #include <cairomm/context.h>
+#include <iostream>
 #include "image.h"
 #include "gui.h"
+
 
 //Constants
 const char *GUI::uiXML ="<ui>"
