@@ -25,6 +25,7 @@
 #include "image.h"
 #include "ocr.h"
 #include "gui.h"
+#include "postproc.h"
 
 
 //Constants
@@ -353,6 +354,17 @@ void GUI::onOCR() {
 void GUI::onPostProcess() {
 	//TODO
 	showMessageDialog("onPostProcess() function stub\n");
+	std::string fullText;
+    fullText = textView.get_buffer()->get_text();
+	PostProc processor;
+	processor.getText(fullText);
+	processor.exicute();
+	fullText = processor.exportText();
+	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
+	textData->set_text(fullText);
+	textView.set_buffer(textData);
+	
+	
 }
 
 //Display a brief description of the program
