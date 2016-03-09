@@ -23,6 +23,7 @@
 #include <cairomm/context.h>
 #include <iostream>
 #include "image.h"
+#include "ocr.h"
 #include "gui.h"
 
 
@@ -343,8 +344,9 @@ void GUI::onUndo() {
 
 //Run the OCR process on the image
 void GUI::onOCR() {
-	//TODO
-	showMessageDialog("onOCR() function stub\n");
+	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
+	textData->set_text(OCR(Image(ocrImage)).recognize());
+	textView.set_buffer(textData);
 }
 
 //Run post proccesing on the OCRed text

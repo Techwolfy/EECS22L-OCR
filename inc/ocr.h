@@ -2,29 +2,28 @@
 #define OCR_H
 
 //Includes
-#include <vector>
 #include <string>
 #include "image.h"
 
 class OCR {
 public:
 	//Constructors
-	OCR();
-	OCR(Image image);
+	OCR(Image input);
 
 	//Destructor
 	~OCR();
 	
 	//Functions
-	char charComp(Image image);
-	void charCrop(Image image, std::vector<std::vector<unsigned char>> &charVec);
+	std::string recognize();
 
 private:
 	//Variables
 	const float *intensities;
+	Image image;
 
 	//Functions
-	float avgInt(Image image);
+	float averageIntensity(Image croppedImage);
+	char compareChar(Image croppedImage);
 };
 
 #endif	//OCR_H

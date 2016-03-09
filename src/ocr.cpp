@@ -1,7 +1,7 @@
 //OCR.cpp
 
 //Includes
-#include <vector>
+#include <string>
 #include "image.h"
 #include "ocr.h"
 
@@ -9,7 +9,8 @@
 #include "averageIntensities.h"
 
 //Constructor
-OCR::OCR() : intensities(averageIntensities) {
+OCR::OCR(Image input) : intensities(averageIntensities),
+						image(input) {
 
 }
 
@@ -20,43 +21,22 @@ OCR::~OCR() {
 
 //Functions
 //Finds the average intensity of an image
-float OCR::avgInt(Image image) {
+float OCR::averageIntensity(Image croppedImage) {
 	float total = 0.0;
 	
-	for(int i = 0; i < image.getHeight(); i++) {
-		for(int j = 0; j < image.getWidth(); j++) {
-			total += image.getPixel(j, i, Image::R) + image.getPixel(j, i, Image::G) + image.getPixel(j, i, Image::B);
+	for(int i = 0; i < croppedImage.getHeight(); i++) {
+		for(int j = 0; j < croppedImage.getWidth(); j++) {
+			total += croppedImage.getPixel(j, i, Image::R) + croppedImage.getPixel(j, i, Image::G) + croppedImage.getPixel(j, i, Image::B);
 		}
 	}
 	
-	return total / (3 * image.getHeight() * image.getWidth());
-}
-
-//Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
-void OCR::charCrop(Image image, std::vector<std::vector<unsigned char>> &charVec) {
-	Image newImage(30, 56);
-	std::vector<unsigned char> text;
-	
-	for(int i = 0; i < image.getHeight(); i += 56) {
-		for(int j = 0; j < image.getWidth(); j += 30) {
-			for(int m = 0; m < 56; m++){
-				for(int n = 0; n < 30; n++){
-					newImage.setPixel(j, i, Image::R, image.getPixel(j, i, Image::R));
-					newImage.setPixel(j, i, Image::G, image.getPixel(j, i, Image::G));
-					newImage.setPixel(j, i, Image::B, image.getPixel(j, i, Image::B));
-				}
-			}
-			text.push_back(charComp(newImage));
-		}
-		charVec.push_back(text);
-		text.clear();
-	}
+	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
 }
 
 //Compares an image to a reference library of characters and outputs the matching character
-char OCR::charComp(Image image) {
+char OCR::compareChar(Image croppedImage) {
 	char output = '\0';
-	float intensity = avgInt(image);
+	float intensity = averageIntensity(croppedImage);
 	float difference = 0.0;
 	float best = 255.0;
 
@@ -73,4 +53,26 @@ char OCR::charComp(Image image) {
 	}
 
 	return output;
+}
+
+//Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
+std::string OCR::recognize() {
+	Image newImage(30, 56);
+	std::string text;
+	
+	for(int i = 0; i < image.getHeight(); i += 56) {
+		for(int j = 0; j < image.getWidth(); j += 30) {
+			for(int m = 0; m < 56; m++){
+				for(int n = 0; n < 30; n++){
+					newImage.setPixel(j, i, Image::R, image.getPixel(j, i, Image::R));
+					newImage.setPixel(j, i, Image::G, image.getPixel(j, i, Image::G));
+					newImage.setPixel(j, i, Image::B, image.getPixel(j, i, Image::B));
+				}
+			}
+			text += compareChar(newImage);
+		}
+		text += '\n';
+	}
+
+	return text;
 }
