@@ -91,10 +91,13 @@ string PostProc::symbolFix(){
 		i = 0;
 		start = fullText.find_first_of("/*;<>#\"\'{}",end);
 		end = start +2;
-		if (start >1) {
+		if (start >1 && start < fullText.length()) {
 			catchSymbol = fullText.substr(start-1,3);
 			
-		}else{
+		}else if(start > fullText.length()){
+			break;
+		}
+		else{
 			continue;
 		}
 		
@@ -123,6 +126,11 @@ string PostProc::dictFix(){
 	while (end < fullText.length()) {
 		start = fullText.find_first_not_of(" \n/*;#<>\"\'(){}\t.",end);
 		end = fullText.find_first_of(" \n/*;#<>\"\'(){}.\t", start);
+		
+		if(start > fullText.length()||end > fullText.length()){
+			break;
+		}
+		
 		if (end-start > 0) {
 			word = fullText.substr(start, end-start);
 			fullText.replace(start, end-start,wordCompare(word));
@@ -132,6 +140,7 @@ string PostProc::dictFix(){
 	return fullText;
 	
 }
+
 
 void PostProc::exicute(){
 	fullText = symbolFix();
