@@ -6,11 +6,11 @@ PKG_CONFIG_CFLAGS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.
 PKG_CONFIG_LIBS=$(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config gtkmm-2.4 --libs)
 CFLAGS=-std=c++0x -g -Iinc $(PKG_CONFIG_CFLAGS)
 LIBS=$(PKG_CONFIG_LIBS)
-OBJS=gui.o image.o ocr.o
+OBJS=gui.o image.o ocr.o postproc.o
 TESTS_GUI=
 TESTS_IO=test-imagepixbuf
 TESTS_PREPROC=test-preprocessing
-TESTS_POSTPROC=
+TESTS_POSTPROC=test-postprocessing
 
 #Build everything
 .PHONY: all
