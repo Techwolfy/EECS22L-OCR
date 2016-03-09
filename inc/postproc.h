@@ -22,22 +22,27 @@ using namespace std;
 
 class PostProc{
 private:
+	//the vecter to store the ditionary
 	std::vector<std::vector<std::string> > Dict;
-	std::string fullText;//the full text pass in
+	//the full text pass in
+	std::string fullText;
 	
 	//private functions
-	string symbolFix();	//fix symbols
+	//fix symbols
+	string symbolFix();
+	//fix words
 	string dictFix();
+	//compare input word to dictionary and return the correct one
+	string wordCompare(std::string word);
 	
 public:
 	//constructor
 	PostProc();
 	//destructor
 	~PostProc();
-	//compare input word to dictionary and return the correct one
-	string wordCompare(std::string word);
 	//add word to dictionary
 	void addword(std::string word);
+	//to do all the process and ouputing the text
 	string exicute(std::string str);
 };
 
