@@ -17,12 +17,21 @@
 #include "postproc.h"
 
 
+
 //constructor
 PostProc::PostProc(){
 	Dict.resize(20);
 	
-	string dict[]={"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if","int","long","register","return","short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void","volatile","while","program","include","Hello","World","hello","world"};
-	for(int i=0;i<38;i++){
+	string dict[]={"auto","break","case","char","const",
+		"continue","default","do","double","else",
+		"enum","extern","float","for","goto",
+		"if","int","long","register","return",
+		"short","signed","sizeof","static","struct",
+		"switch","typedef","union","unsigned","void",
+		"volatile","while","program","include","Hello",
+		"World","hello","world","printf","stdio",
+		"main","scanf"};
+	for(int i=0;i< 42;i++){
 		Dict[dict[i].size()].push_back(dict[i]);
 	}
 }
@@ -79,39 +88,66 @@ void PostProc::addword(string word){
 	Dict[len].push_back(word);
 }
 
-//fixed the symbols at the center of words, replace an alphabet letter
+//fixed the symbols
 string PostProc::symbolFix(){
 	string removed;
 	size_t start = 0, end = 0;
 	string catchSymbol;
+	size_t findCase,findDef, findSym;
 	char near;
 	int i;
 	
-	while (end < fullText.length()) {
-		i = 0;
-		start = fullText.find_first_of("/*;<>#\"\'{}",end);
-		end = start +2;
-		if (start >1 && start < fullText.length()) {
-			catchSymbol = fullText.substr(start-1,3);
-			
-		}else if(start > fullText.length()){
+	while (start+1 < fullText.length()) {
+		
+		start = fullText.find_first_of("/*|;:>#\"\'{}",end);
+		if(start > fullText.length()){
 			break;
 		}
-		else{
+		end = start + 2;
+		if (start == 0) {
 			continue;
 		}
 		
-		near = catchSymbol[0];
+		//fix ';' with ':'
+		if (fullText[start] == ':') {
+			findCase = fullText.rfind("case",start);
+			if (findCase > fullText.size()) {
+				findCase = 0;
+				
+			}
+			findDef =  fullText.rfind("default",start);
+			if (findDef > fullText.size()) {
+				findDef = 0;
+			}
+
+			findSym = fullText.rfind(';',start);
+			
+			//cout<< findCase <<'\t'<<findDef<<'\t'<<findSym<<'\n';
+			
+			if(findCase > findSym || findDef > findSym){
+				//unchange
+			}else{
+				fullText[start] = ';';
+			}
+			
+		}
+		
+		
+		
+		//check symbols at the center of words, replace an alphabet letter
+		i = 0;
+		near = fullText[start-1];
 		if ((near > 48 && near < 57) || (near > 65 && near < 90) || (near > 97 && near < 122)) {
 			i++;
 		}
-		near = catchSymbol[2];
+		near = fullText[start+1];
 		if ((near > 48 && near < 57) || (near > 65 && near < 90) || (near > 97 && near < 122)) {
 			i++;
 		}
 		if (i >= 2) {
-			fullText.replace(start, 1, "a");
+			fullText[start] = 'a';
 		}
+		
 		
 		
 	}
@@ -124,8 +160,8 @@ string PostProc::dictFix(){
 	std::size_t start = 0, end = 0;
 	std::string word;
 	while (end < fullText.length()) {
-		start = fullText.find_first_not_of(" \n/*;#<>\"\'(){}\t.",end);
-		end = fullText.find_first_of(" \n/*;#<>\"\'(){}.\t", start);
+		start = fullText.find_first_not_of(" /*|.,;:+-#<>\"\'(){}\t\n",end);
+		end = fullText.find_first_of(" /*|.,;:+-#<>\"\'(){}\t\n", start);
 		
 		if(start > fullText.length()||end > fullText.length()){
 			break;

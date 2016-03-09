@@ -8,9 +8,9 @@ CFLAGS=-std=c++0x -g -Iinc $(PKG_CONFIG_CFLAGS)
 LIBS=$(PKG_CONFIG_LIBS)
 OBJS=gui.o image.o ocr.o postproc.o
 TESTS_GUI=
-TESTS_IO=test-imagepixbuf
-TESTS_PREPROC=test-preprocessing
-TESTS_POSTPROC=test-postprocessing
+TESTS_IO= test-imagepixbuf
+TESTS_PREPROC= test-preprocessing
+TESTS_POSTPROC= test-postprocessing
 
 #Build everything
 .PHONY: all

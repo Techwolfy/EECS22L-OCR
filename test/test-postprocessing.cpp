@@ -6,10 +6,7 @@
 //  Copyright © 2016年 Terry Liao. All rights reserved.
 //
 
-
-// string::substr
 #include <iostream>
-#include <string>
 #include <string>
 #include <cstring>
 #include <iostream>
@@ -24,9 +21,11 @@
 
 int main ()
 {
-	std::string str= "/* He/lo World pro*ram */\n#include <stdio.h>\nvoid main(){\n	 chir test;	\n	c*ntlnuo;	\n	printf(\"Hello World\");\n}";
+	std::ifstream ifs("post-test-in.txt");
 	
-
+	std::string str((std::istreambuf_iterator<char>(ifs)),
+					std::istreambuf_iterator<char>());
+	
 	
 	//size_t terminate = str.find('\0');
 	
@@ -34,21 +33,21 @@ int main ()
 	PostProc spellcheck;
 	
 	
-//	std::cout << str <<'\n';
+	//std::cout << str <<'\n';
 	
 	str = spellcheck.exicute(str);
 	
-//	std::cout << str <<'\n';
+	//std::cout << str <<'\n';
 	
 	std::fstream file;
-	file.open("postTest.txt", std::fstream::out | std::fstream::trunc);
+	file.open("post-test-out.txt", std::fstream::out | std::fstream::trunc);
 	file << str;
 	file.flush();
 	file.close();
 	
-	std::cout <<"Post-processing test is done, checkout the postTest.txt for output result"<<'\n';
+	std::cout <<"Post-processing test complete. CHECK OUTPUT FILE FOR RESULT!"<<'\n';
 	
-		
+	
 	
 	return 0;
 }
