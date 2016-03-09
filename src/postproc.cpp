@@ -21,11 +21,10 @@
 PostProc::PostProc(){
 	Dict.resize(20);
 	
-	string dict[]={"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if","int","long","register","return","short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void","volatile","while","program","include"};
-	for(int i=0;i<33;i++){
+	string dict[]={"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if","int","long","register","return","short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void","volatile","while","program","include","Hello","World","hello","world"};
+	for(int i=0;i<38;i++){
 		Dict[dict[i].size()].push_back(dict[i]);
 	}
-	std::cout << dict[33]<<'\n';
 }
 
 
@@ -53,17 +52,21 @@ string PostProc::wordCompare(string word){
 	}
 	if (len< 6 ) {
 		if(max<len-2||max==0){
+			//std::cout<<"word: "<<word << '\n';
 			return word;
 		}
 		else{
+			//std::cout<<"corrcet: "<<correction << '\n';
 			return correction;
 		}
 		
 	}else{
 		if(max<len-3||max==0){
+			//std::cout<<"word: "<< word<<'\n';
 			return word;
 		}
 		else{
+			//std::cout<<"correct: "<<correction << '\n';
 			return correction;
 		}
 	}
