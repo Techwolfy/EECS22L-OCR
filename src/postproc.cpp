@@ -35,6 +35,10 @@ PostProc::PostProc(){
 		Dict[dict[i].size()].push_back(dict[i]);
 	}
 }
+//destructor
+PostProc::~PostProc(){
+	
+}
 
 //compare the word, return the fixed word
 string PostProc::wordCompare(string word){
@@ -103,13 +107,13 @@ string PostProc::symbolFix(){
 		if(start > fullText.length()){
 			break;
 		}
-		end = start + 2;
+		end = start + 1;
 		if (start == 0) {
 			continue;
 		}
 		
 		//fix ';' with ':'
-		if (fullText[start] == ':') {
+		if (fullText[start] == ':'|| fullText[start] == ';') {
 			findCase = fullText.rfind("case",start);
 			if (findCase > fullText.size()) {
 				findCase = 0;
@@ -120,12 +124,12 @@ string PostProc::symbolFix(){
 				findDef = 0;
 			}
 
-			findSym = fullText.rfind(';',start);
+			findSym = fullText.find_last_of(";",start);
 			
 			//cout<< findCase <<'\t'<<findDef<<'\t'<<findSym<<'\n';
 			
 			if(findCase > findSym || findDef > findSym){
-				//unchange
+				fullText[start] = ':';
 			}else{
 				fullText[start] = ';';
 			}

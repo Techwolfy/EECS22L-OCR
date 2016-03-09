@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 
 	//Run preprocessing functinos
 	image.removeStains();
-	image.toBW();
+	image.toBW(185);
 	image.rotate(-7.5);
 	image.crop(50, 50, 150, 100);
 	image.save("preprocessing.jpg");

@@ -33,7 +33,7 @@ public:
 	//constructor
 	PostProc();
 	//destructor
-	//~PostProc();
+	~PostProc();
 	//compare input word to dictionary and return the correct one
 	string wordCompare(std::string word);
 	//add word to dictionary
