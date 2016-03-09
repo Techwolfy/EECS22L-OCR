@@ -353,13 +353,14 @@ void GUI::onOCR() {
 //Run post proccesing on the OCRed text
 void GUI::onPostProcess() {
 	//TODO
+	//access text from textbox
 	showMessageDialog("onPostProcess() function stub\n");
 	std::string fullText;
     fullText = textView.get_buffer()->get_text();
 	PostProc processor;
-	processor.getText(fullText);
-	processor.exicute();
-	fullText = processor.exportText();
+	//get text--processing--export
+	fullText = processor.exicute(fullText);
+	//sending the fixed text to textbox
 	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
 	textData->set_text(fullText);
 	textView.set_buffer(textData);

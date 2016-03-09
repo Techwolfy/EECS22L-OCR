@@ -17,7 +17,7 @@
 #include "postproc.h"
 
 
-
+//constructor
 PostProc::PostProc(){
 	Dict.resize(20);
 	
@@ -27,7 +27,7 @@ PostProc::PostProc(){
 	}
 }
 
-
+//compare the word, return the fixed word
 string PostProc::wordCompare(string word){
 	int counter=0;
 	int max=0;
@@ -73,13 +73,13 @@ string PostProc::wordCompare(string word){
 	
 	return word;
 }
-
+//add word to ditionary, optional
 void PostProc::addword(string word){
 	size_t len= word.size();
 	Dict[len].push_back(word);
 }
 
-
+//fixed the symbols at the center of words, replace an alphabet letter
 string PostProc::symbolFix(){
 	string removed;
 	size_t start = 0, end = 0;
@@ -119,7 +119,7 @@ string PostProc::symbolFix(){
 	
 	return fullText;
 }
-
+//fix the word with preset dictionary
 string PostProc::dictFix(){
 	std::size_t start = 0, end = 0;
 	std::string word;
@@ -141,19 +141,17 @@ string PostProc::dictFix(){
 	
 }
 
+//public functions
 
-void PostProc::exicute(){
+//perform post processing
+string PostProc::exicute(std::string str){
+	fullText = str;
 	fullText = symbolFix();
 	fullText = dictFix();
-}
-
-void PostProc::getText(std::string str){
-	fullText = str;
-}
-
-string PostProc::exportText(){
 	return fullText;
 }
+
+
 
 
 

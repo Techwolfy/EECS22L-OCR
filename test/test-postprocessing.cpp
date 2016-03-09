@@ -36,11 +36,7 @@ int main ()
 	
 //	std::cout << str <<'\n';
 	
-	spellcheck.getText(str);
-	
-	spellcheck.exicute();
-	
-	str = spellcheck.exportText();
+	str = spellcheck.exicute(str);
 	
 //	std::cout << str <<'\n';
 	
@@ -50,6 +46,7 @@ int main ()
 	file.flush();
 	file.close();
 	
+	std::cout <<"Post-processing test is done, checkout the postTest.txt for output result"<<'\n';
 	
 		
 	

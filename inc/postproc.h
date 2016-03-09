@@ -38,9 +38,7 @@ public:
 	string wordCompare(std::string word);
 	//add word to dictionary
 	void addword(std::string word);
-	void getText(std::string str);
-	string exportText();
-	void exicute();
+	string exicute(std::string str);
 };
 
 #endif /* PostProc_h */
