@@ -1,4 +1,4 @@
-//Test-Preprocessing.cpp
+//Test-PreProcessing.cpp
 //Tests for preprocessing functions
 
 //Includes
@@ -19,12 +19,12 @@ int main(int argc, char *argv[]) {
 	//Create image
 	Image image(Gdk::Pixbuf::create_from_inline(sizeof(helloworld_pixbuf), helloworld_pixbuf));
 
-	//Run preprocessing functinos
+	//Run preprocessing functions
 	image.removeStains();
 	image.toBW(185);
 	image.rotate(-7.5);
 	image.crop(50, 50, 150, 100);
-	image.save("preprocessing.jpg");
+	image.save("preprocessing-out.jpg");
 
 	printf("Image preprocessing test complete. CHECK OUTPUT FILE FOR RESULT!\n");
 	return 0;

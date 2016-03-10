@@ -24,9 +24,8 @@
 #include <iostream>
 #include "image.h"
 #include "ocr.h"
-#include "gui.h"
 #include "postproc.h"
-
+#include "gui.h"
 
 //Constants
 const char *GUI::uiXML ="<ui>"
@@ -352,25 +351,14 @@ void GUI::onOCR() {
 
 //Run post proccesing on the OCRed text
 void GUI::onPostProcess() {
-	//TODO
-	//access text from textbox
-	showMessageDialog("onPostProcess() function stub\n");
-	std::string fullText;
-    fullText = textView.get_buffer()->get_text();
-	PostProc processor;
-	//get text--processing--export
-	fullText = processor.exicute(fullText);
-	//sending the fixed text to textbox
 	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
-	textData->set_text(fullText);
+	textData->set_text(PostProc(textView.get_buffer()->get_text()).execute());
 	textView.set_buffer(textData);
-	
-	
 }
 
 //Display a brief description of the program
 void GUI::onAbout() {
-	showMessageDialog("About EECS22l-OCR\n\nVersion v0.0.1-beta\n\nDeveloped By:\nDaniel Ring\nShahrooz Maghsoudi\nZunwen Li\nJinliang Liao\nMichael Andon\nDonghao Feng\nYixiang Yan\n");
+	showMessageDialog("About EECS22L-OCR\n\nVersion v0.0.1-beta\n\nDeveloped By:\nDaniel Ring\nShahrooz Maghsoudi\nZunwen Li\nJinliang Liao\nMichael Andon\nDonghao Feng\nYixiang Yan\n");
 }
 
 //Display instructions for the program
