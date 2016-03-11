@@ -14,6 +14,9 @@ public:
 	~OCR();
 	
 	//Functions
+	std::vector<Image> charCrop(Image image);
+	char printLetter(int i);
+	Image readImage(const char fname[80]);
 	std::string recognize();
 
 private:
@@ -23,7 +26,7 @@ private:
 
 	//Functions
 	float averageIntensity(Image croppedImage);
-	char compareChar(Image croppedImage);
+	char compareChar(Image croppedImage, std::vector<Image> iRefList);
 };
 
 #endif	//OCR_H
