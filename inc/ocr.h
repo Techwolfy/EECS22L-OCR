@@ -3,6 +3,7 @@
 
 //Includes
 #include <string>
+#include <vector>
 #include "image.h"
 
 class OCR {
@@ -19,14 +20,16 @@ public:
 private:
 	//Variables
 	const float *intensities;
+	const Image reference;
+	std::vector<Image> refImages;
 	Image image;
 	
 	//Functions
 	float averageIntensity(Image croppedImage);
-	char compareChar(Image croppedImage, std::vector<Image> iRefList);
-	std::vector<Image> charCrop(Image image);
-	char printLetter(int i);
-
+	std::vector<Image> cropCharImages(Image input);
+	char imageToChar(Image croppedImage);
+	int countBlackPixels(Image input);
+	char printChar(int i);
 };
 
 #endif	//OCR_H
