@@ -1,15 +1,13 @@
+//--
 //OCR.cpp
 
 //Includes
 #include <string>
-#include<cmath>
-#include<iostream>
 #include "image.h"
 #include "ocr.h"
-#define SLEN 80
+
 //Include numeric constants
 #include "averageIntensities.h"
-using namespace std;
 
 //Constructor
 OCR::OCR(Image input) : intensities(averageIntensities),
@@ -26,121 +24,41 @@ OCR::~OCR() {
 //Finds the average intensity of an image
 float OCR::averageIntensity(Image croppedImage) {
 	float total = 0.0;
-	std::cout<<"hello"<<std::endl;
-	std::cout<<croppedImage.getWidth()<<std::endl;
-	std::cout<<croppedImage.getHeight()<<std::endl;
-
+	
 	for(int i = 0; i < croppedImage.getHeight(); i++) {
 		for(int j = 0; j < croppedImage.getWidth(); j++) {
-			total += 0.3f*croppedImage.getPixel(i, j, Image::R) 
-+ 0.59*croppedImage.getPixel(i,j, Image::G) + 
-0.11f*croppedImage.getPixel(i, j, 
-Image::B);
+			total += croppedImage.getPixel(j, i, Image::R) + croppedImage.getPixel(j, i, Image::G) + croppedImage.getPixel(j, i, Image::B);
 		}
-	}
-	std::cout<<total<<std::endl;
-	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
-}
-
-//Compares an image to a reference library of characters and outputs the matching character
-char OCR::compareChar(Image croppedImage, vector<Image> iList) {
-
-	int imgH = croppedImage.getHeight();
-	int imgW = croppedImage.getWidth();
-
-	int countBP1 = 0;
-	int countBP2 = 0;
-	int countBP3 = 0;
-
-	int refIndex = 0;
-
-	Image iRef;
-
-	//count black pixels of input image
-	for(int x=0; x<imgH; x++){
-		for(int y = 0; y<imgW; y++){
-			if(croppedImage.getPixel(y, x, Image::R) == 0 && croppedImage.getPixel(y, x, Image::G) == 0 && croppedImage.getPixel(y, x, Image::B) == 0){
-				countBP1++;
-			}
-		}	
-	}
-
-	//read first image of vector iList and assign to iRef
-	iRef = iList.at(0);
-
-	//count black pixels of reference image
-	for(int i = 0; i <  iRef.getHeight(); i++){
-		for(int j = 0; j < iRef.getWidth(); j++){
-			if(iRef.getPixel(j, i, Image::R) == 0 && iRef.getPixel(j, i, Image::G) == 0 && iRef.getPixel(j, i, Image::B) == 0){
-				countBP2++;
-			}
-
-		}
-
 	}
 	
-	int currDiff = 0;
-	int bestDiff = countBP2 - countBP1;
-	//loop through each reference image in iList
-	for(int k = 1; k < iList.size(); k++){
-		//read second image of vector iList and assign to iRef
-		iRef = iList.at(k);
-
-		//count black pixels of reference image
-		for(int m = 0; m <  iRef.getHeight(); m++){
-			for(int n = 0; n < iRef.getWidth(); n++){
-				//get R,G,B values of reference image and check if its a black pixel
-				if(iRef.getPixel(n, m, Image::R) == 0 && iRef.getPixel(n, m, Image::G) == 0 && iRef.getPixel(n, m, Image::B) == 0){
-					countBP3++; //increment black pixel count
-				}
-
-			}
-
-		}
-		//compare black pixel count of input image to reference image
-		//
-		currDiff = countBP3 - countBP1;
-		if( abs(currDiff) < abs(bestDiff)  ){
-			refIndex = k;
-			bestDiff = currDiff;
-			
-
-		}
-		//reset count for next reference image
-		countBP3 = 0;
-	}
-
-	return(printLetter(refIndex));
-
+	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
 }
 
 //Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
 std::string OCR::recognize() {
-	std::string text;
-	vector<Image> img = charCrop(image);
 	
-	//function start
+	std::string text;
+	vector<Image> img = charCrop(image);	
 	int newLine = 0;
-
-	//crop reference image here
-        Image iCourierFont(Gdk::Pixbuf::create_from_file("/users/ugrad2/2014/spring/mandon/chkout/src/CourierNew476_bw.jpg"));
-        std::cout<<"read image"<<std::endl; //readImage("CourierNew476_bw");
+        
+	Image iCourierFont(Gdk::Pixbuf::create_from_file("/users/ugrad2/2015/winter/L16T12/ocr/src/CourierNew476_bw.jpg"));
+        
         vector<Image> iList = charCrop(iCourierFont);
-
+	
 	for(int i = 0; i<img.size();i++){
 		text += compareChar(img.at(i), iList);
 		newLine++;
 		if(newLine == img.at(i).getWidth()){
-			text+= "\n";
-			newLine = 0;
+			text+= "\n"; 
+			newLine = 0; 
 		}
-		
-	}
-	
+
 	return text;
 }
 
-char OCR::printLetter(int index){
+
+//-----
+char OCR::printLetter(int index){ 
 	if(index == 0){
 		return 'a';
 	}
@@ -173,7 +91,6 @@ char OCR::printLetter(int index){
 	}
 	if(index == 8){
 		return 'i';
-
 		//cout<<"i";
 	}
 	if(index == 9){
@@ -273,7 +190,7 @@ char OCR::printLetter(int index){
 		//cout<<"G";
 	}
 	if(index == 33){
-		return 'H';	
+		return 'H';
 		//cout<<"H";
 	}
 	if(index == 34){
@@ -516,13 +433,66 @@ char OCR::printLetter(int index){
 	else{
 		return ' ';
 	}
-
+}
+//Compares an image to a reference library of characters and outputs the matching character
+char OCR::compareChar(Image croppedImage, vector<Image> iList) {
+	int imgH = croppedImage.getHeight();
+	int imgW = croppedImage.getWidth();
+	int countBP1 = 0;
+	int countBP2 = 0;
+	int countBP3 = 0;
+	int refIndex = 0;
+	Image iRef;
+	//count black pixels of input image
+	for(int x=0; x<imgH; x++){
+		for(int y = 0; y<imgW; y++){
+			if(croppedImage.getPixel(y, x, Image::R) == 0 && croppedImage.getPixel(y, x, Image::G) == 0 && croppedImage.getPixel(y, x, Image::B) == 0){
+				countBP1++;
+			}
+		}
+	}
+	//read first image of vector iList and assign to iRef
+	iRef = iList.at(0);
+	//count black pixels of reference image
+	for(int i = 0; i < iRef.getHeight(); i++){
+		for(int j = 0; j < iRef.getWidth(); j++){
+			if(iRef.getPixel(j, i, Image::R) == 0 && iRef.getPixel(j, i, Image::G) == 0 && iRef.getPixel(j, i, Image::B) == 0){
+				countBP2++;
+			}
+		}
+	}
+	
+	int currDiff = 0;
+	int bestDiff = countBP2 - countBP1;
+	//loop through each reference image in iList
+	for(int k = 1; k < iList.size(); k++){
+		//read second image of vector iList and assign to iRef
+		iRef = iList.at(k);
+		//count black pixels of reference image
+		for(int m = 0; m < iRef.getHeight(); m++){
+			for(int n = 0; n < iRef.getWidth(); n++){
+				//get R,G,B values of reference image and check if its a black pixel
+				if(iRef.getPixel(n, m, Image::R) == 0 && iRef.getPixel(n, m, Image::G) == 0 && iRef.getPixel(n, m, Image::B) == 0){
+					countBP3++; //increment black pixel count
+				}
+			}
+		}
+		//compare black pixel count of input image to reference image
+		//
+		currDiff = countBP3 - countBP1;
+		if( abs(currDiff) < abs(bestDiff)  ){
+			refIndex = k;
+			bestDiff = currDiff;
+			
+		}
+		//reset count for next reference image
+		countBP3 = 0;
+	}
+	return(printLetter(refIndex));
 }
 
-//character cropping function
-vector<Image> OCR::charCrop(Image img){
-
-	//character crop starts here
+//character cropping function 
+vector<Image> OCR::charCrop(Image img){ 
 	int wImg = img.getWidth();
 	int hImg = img.getHeight();
 	
@@ -535,12 +505,10 @@ vector<Image> OCR::charCrop(Image img){
 					imge.setPixel( n, m, Image::R, img.getPixel(j+n, i+m, Image::R));
 					imge.setPixel( n, m, Image::G, img.getPixel(j+n, i+m, Image::G));
 					imge.setPixel( n, m, Image::B, img.getPixel(j+n, i+m, Image::B));
-
 				}
 			}
 			imgList.push_back(imge);
 		}
 	}
-
-
+	return imgList;
 }
