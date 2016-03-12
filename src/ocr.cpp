@@ -1,4 +1,3 @@
-//<<<<<<<
 //OCR.cpp
 
 //Includes
@@ -46,7 +45,6 @@ Image::B);
 //Compares an image to a reference library of characters and outputs the matching character
 char OCR::compareChar(Image croppedImage, vector<Image> iList) {
 
-	cout<<"got inside of charComp"<<endl;
 	int imgH = croppedImage.getHeight();
 	int imgW = croppedImage.getWidth();
 
@@ -108,9 +106,6 @@ char OCR::compareChar(Image croppedImage, vector<Image> iList) {
 			
 
 		}
-		std::cout<<countBP1<<std::endl;
-		std::cout<<countBP2<<std::endl;
-		std::cout<<countBP3<<std::endl;
 		//reset count for next reference image
 		countBP3 = 0;
 	}
@@ -121,15 +116,11 @@ char OCR::compareChar(Image croppedImage, vector<Image> iList) {
 
 //Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
 std::string OCR::recognize() {
-	//Image newImage(30, 56);
-	//Image i(image.getWidth(), image.getHeight());
-	
 	std::string text;
 	vector<Image> img = charCrop(image);
 	
 	//function start
 	int newLine = 0;
-	std::cout<<img.size()<<std::endl;
 
 	//crop reference image here
         Image iCourierFont(Gdk::Pixbuf::create_from_file("/users/ugrad2/2014/spring/mandon/chkout/src/CourierNew476_bw.jpg"));
@@ -532,13 +523,8 @@ char OCR::printLetter(int index){
 vector<Image> OCR::charCrop(Image img){
 
 	//character crop starts here
-	/*std::cout<<"Got Inside Char Crop"<<std::endl;
-        std::cout<<"hehe"<<std::endl;
-
 	int wImg = img.getWidth();
 	int hImg = img.getHeight();
-	std::cout<<wImg<<std::endl;
-	std::cout<<hImg<<std::endl;
 	
 	vector<Image> imgList;
 	for(int i = 0; i < hImg; i += 56) {
@@ -554,240 +540,7 @@ vector<Image> OCR::charCrop(Image img){
 			}
 			imgList.push_back(imge);
 		}
-	}*/
-//-------------------------------
-	std::cout<<"Got inside character crop"<<std::endl;
-	int wImg = img.getWidth();
-	int hImg = img.getHeight();
-	
-	//int startRow = 0;
-	int startCol = 0;
-	int endCol = 0;
-	//int startRow = 0;
-	//int endRow = 0;
-	
-	//int countWidth = 0;
-	int countHeight = 0;
-	
-	vector<Image> imgList;
-	//Find start Column and end Column
-	for(int i = 0; i<wImg; i++){
-		for(int j = 0; j<hImg; j++){
-			if( startCol == 0 && img.getPixel(i, j, Image::R) == 0 && img.getPixel(i, j, Image::G) == 0 && img.getPixel(i, j, Image::G) == 0 ){
-				startCol = i;
-				//break;
-			}
-			if( startCol != 0 && img.getPixel(i, j, Image::R) == 255 && img.getPixel(i, j, Image::G) == 255 && img.getPixel(i, j, Image::G) == 255 ){
-				endCol = i;
-				//break;
-			}
-			if(startCol !=0 && endCol != 0){
-				int diff = endCol-startCol;
-				Image imge(diff, 56);
-				
-				for(int r = 0; r< 56; r++){
-					for(int c = 0; c<diff; c++){
-						imge.setPixel( c, r, Image::R, img.getPixel(c+diff, r+countHeight, Image::R));
-						imge.setPixel( c, r, Image::G, img.getPixel(c+diff, r+countHeight, Image::G));
-						imge.setPixel( c, r, Image::B, img.getPixel(c+diff, r+countHeight, Image::B));
-					}
-				}
-				imgList.push_back(imge);
-				countHeight += 56;
-				startCol = 0;
-				endCol = 0;
-			}
-			
-
-		}
-
-	}
-	return imgList;
-
-//------------------------------
-
-}
-
-Image OCR::readImage(const char fname[SLEN])
-{
-    FILE *File;
-    char Type[SLEN];
-    int W, H, MaxValue;
-    int x, y;
-    char SysCmd[SLEN * 5];
-    char ftype[] = ".ppm";
-    char fname_tmp[SLEN];  /*avoid to modify on the original pointer, 11/10/10, X.Han*/
-    
-    
-    
-    
-    strcpy(fname_tmp, fname);
-    
-    sprintf(SysCmd, "jpegtopnm %s.jpg > %s.ppm",fname_tmp,fname_tmp);
-    system(SysCmd);
-    strcat(fname_tmp, ftype);
-    
-    File = fopen(fname_tmp, "r");
-    if (!File) { 
-#ifdef DEBUG
-        printf("\nCan't open file \"%s\" for reading!\n", fname); 
-#endif
-        // return NULL;
-    }
-    
-    fscanf(File, "%79s", Type);
-    if (Type[0] != 'P' || Type[1] != '6' || Type[2] != 0) { 
-#ifdef DEBUG
-        printf("\nUnsupported file format!\n"); 
-#endif
-        fclose(File);
-        // return NULL;
-    }
-    
-    fscanf(File, "%d", &W);
-    
-    if (W <= 0) { 
-#ifdef DEBUG
-        printf("\nUnsupported image width %d!\n", W); 
-#endif
-        fclose(File);
-        // return NULL;
-    }
-    
-    fscanf(File, "%d", &H);
-    
-    if (H <= 0) { 
-#ifdef DEBUG
-        printf("\nUnsupported image height %d!\n", H); 
-#endif
-        fclose(File);
-        // return NULL;
-    }
-    
-    fscanf(File, "%d", &MaxValue);
-    if (MaxValue != 255) { 
-#ifdef DEBUG
-        printf("\nUnsupported image maximum value %d!\n", MaxValue); 
-#endif
-        fclose(File);
-        // return NULL;
-    }
-    if ('\n' != fgetc(File)) { 
-#ifdef DEBUG
-        printf("\nCarriage return expected at the end of the file!\n"); 
-#endif
-        fclose(File);
-        // return NULL;
-    }
-    
-    Image image(W, H);
-    
-    
-    for (y = 0; y < image.getHeight(); y++)
-        for (x = 0; x < image.getWidth(); x++) {
-            image.setPixel( y, x, Image::R, fgetc(File));
-            image.setPixel( y, x, Image::G, fgetc(File));
-            image.setPixel( y, x, Image::B, fgetc(File));
-            
-        }
-    int test= (int)image.getPixel(45,29, Image::G);
-    cout<<test<<endl;
-    
-    if (ferror(File)) { 
-#ifdef DEBUG
-        printf("\nFile error while reading from file!\n"); 
-#endif
-        image.~Image();
-        // return nullptr;
-    }
-    
-#ifdef DEBUG
-    printf("%s was read successfully!\n", fname_tmp); 
-#endif
-    fclose(File);
-    sprintf(SysCmd, "rm %s",fname_tmp);
-    system(SysCmd);//delete temp file
-
-
-	return image;
-}
-/*=======
-//OCR.cpp
-
-//Includes
-#include <string>
-#include "image.h"
-#include "ocr.h"
-
-//Include numeric constants
-#include "averageIntensities.h"
-
-//Constructor
-OCR::OCR(Image input) : intensities(averageIntensities),
-						image(input) {
-
-}
-
-//Desrtructor
-OCR::~OCR() {
-
-}
-
-//Functions
-//Finds the average intensity of an image
-float OCR::averageIntensity(Image croppedImage) {
-	float total = 0.0;
-	
-	for(int i = 0; i < croppedImage.getHeight(); i++) {
-		for(int j = 0; j < croppedImage.getWidth(); j++) {
-			total += croppedImage.getPixel(j, i, Image::R) + croppedImage.getPixel(j, i, Image::G) + croppedImage.getPixel(j, i, Image::B);
-		}
-	}
-	
-	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
-}
-
-//Compares an image to a reference library of characters and outputs the matching character
-char OCR::compareChar(Image croppedImage) {
-	char output = '\0';
-	float intensity = averageIntensity(croppedImage);
-	float difference = 0.0;
-	float best = 255.0;
-
-	for(int i = 0; i < (127 - 32); i++) {
-		if(intensities[i] - intensity > 0) {
-			difference = intensities[i] - intensity;
-		} else {
-			difference = intensity - intensities[i];
-		}
-		if(difference < best) {
-			best = difference;
-			output = i + 32;
-		}
 	}
 
-	return output;
-}
 
-//Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
-std::string OCR::recognize() {
-	Image newImage(30, 56);
-	std::string text;
-	
-	for(int i = 0; i < image.getHeight(); i += 56) {
-		for(int j = 0; j < image.getWidth(); j += 30) {
-			for(int m = 0; m < 56; m++){
-				for(int n = 0; n < 30; n++){
-					newImage.setPixel(j, i, Image::R, image.getPixel(j, i, Image::R));
-					newImage.setPixel(j, i, Image::G, image.getPixel(j, i, Image::G));
-					newImage.setPixel(j, i, Image::B, image.getPixel(j, i, Image::B));
-				}
-			}
-			text += compareChar(newImage);
-		}
-		text += '\n';
-	}
-
-	return text;
 }
->>>>>>> 1.8*/
