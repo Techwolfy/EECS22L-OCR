@@ -69,8 +69,8 @@ build/test/%: test/%.cpp $(addprefix build/, $(OBJS)) | build
 #Create release archives
 .PHONY: release
 release: | all
-	tar cvzf OCR_Beta.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md bin/ doc/
-	tar cvzf OCR_Beta_src.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md Makefile bin/ doc/ inc/ src/ test/
+	tar cvzf OCR_V1.0.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md bin/ doc/
+	tar cvzf OCR_V1.0_src.tar.gz --exclude=CVS README.md COPYRIGHT INSTALL.md Makefile bin/ doc/ inc/ src/ test/
 
 
 #Clean up old build and release files
