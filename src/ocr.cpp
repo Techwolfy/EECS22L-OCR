@@ -1,4 +1,3 @@
-//--
 //OCR.cpp
 
 //Includes
@@ -34,31 +33,107 @@ float OCR::averageIntensity(Image croppedImage) {
 	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
 }
 
+
 //Takes 30x56 segments of the image and compares to a reference library, stores characters in a 2d vector.
 std::string OCR::recognize() {
-	
 	std::string text;
-	vector<Image> img = charCrop(image);	
+	vector<Image> img = charCrop(image);
 	int newLine = 0;
-        
-	Image iCourierFont(Gdk::Pixbuf::create_from_file("/users/ugrad2/2015/winter/L16T12/ocr/src/CourierNew476_bw.jpg"));
-        
+
+        Image iCourierFont(Gdk::Pixbuf::create_from_file("/users/ugrad2/2015/winter/L16T12/ocr/src/CourierNew476_bw.jpg"));
+        std::cout<<"read image"<<std::endl; //readImage("CourierNew476_bw");
         vector<Image> iList = charCrop(iCourierFont);
-	
 	for(int i = 0; i<img.size();i++){
 		text += compareChar(img.at(i), iList);
 		newLine++;
 		if(newLine == img.at(i).getWidth()){
-			text+= "\n"; 
-			newLine = 0; 
+			text+= "\n";
+			newLine = 0;
 		}
-
+	}
 	return text;
+}
+//character cropping function 
+vector<Image> OCR::charCrop(Image img){ 
+	int wImg = img.getWidth();
+	int hImg = img.getHeight();
+	
+	vector<Image> imgList;
+	for(int i = 0; i < hImg; i += 56) {
+		for(int j = 0; j < wImg; j += 30) {
+			Image imge(30, 56);
+			for(int m = 0; m < 56; m++){
+				for(int n = 0; n < 30; n++){
+					imge.setPixel( n, m, Image::R, img.getPixel(j+n, i+m, Image::R));
+					imge.setPixel( n, m, Image::G, img.getPixel(j+n, i+m, Image::G));
+					imge.setPixel( n, m, Image::B, img.getPixel(j+n, i+m, Image::B));
+				}
+			}
+			imgList.push_back(imge);
+		}
+	}
+	return imgList;
+}
+
+//Compares an image to a reference library of characters and outputs the matching character 
+char OCR::compareChar(Image croppedImage, vector<Image> iList) {
+	int imgH = croppedImage.getHeight();
+	int imgW = croppedImage.getWidth();
+	int countBP1 = 0;
+	int countBP2 = 0;
+	int countBP3 = 0;
+	int refIndex = 0;
+	Image iRef;
+	//count black pixels of input image
+	for(int x=0; x<imgH; x++){
+		for(int y = 0; y<imgW; y++){
+			if(croppedImage.getPixel(y, x, Image::R) == 0 && croppedImage.getPixel(y, x, Image::G) == 0 && croppedImage.getPixel(y, x, Image::B) == 0){
+				countBP1++;
+			}
+		}
+	}
+	//read first image of vector iList and assign to iRef
+	iRef = iList.at(0);
+	//count black pixels of reference image
+	for(int i = 0; i < iRef.getHeight(); i++){
+		for(int j = 0; j < iRef.getWidth(); j++){
+			if(iRef.getPixel(j, i, Image::R) == 0 && iRef.getPixel(j, i, Image::G) == 0 && iRef.getPixel(j, i, Image::B) == 0){
+				countBP2++;
+			}
+		}
+	}
+	
+	int currDiff = 0;
+	int bestDiff = countBP2 - countBP1;
+	//loop through each reference image in iList
+	for(int k = 1; k < iList.size(); k++){
+		//read second image of vector iList and assign to iRef
+		iRef = iList.at(k);
+		//count black pixels of reference image
+		for(int m = 0; m < iRef.getHeight(); m++){
+			for(int n = 0; n < iRef.getWidth(); n++){
+				//get R,G,B values of reference image and check if its a black pixel
+				if(iRef.getPixel(n, m, Image::R) == 0 && iRef.getPixel(n, m, Image::G) == 0 && iRef.getPixel(n, m, Image::B) == 0){
+					countBP3++; //increment black pixel count
+				}
+			}
+		}
+		//compare black pixel count of input image to reference image
+		//
+		currDiff = countBP3 - countBP1;
+		if( abs(currDiff) < abs(bestDiff)  ){
+			refIndex = k;
+			bestDiff = currDiff;
+			
+		}
+		//reset count for next reference image
+		countBP3 = 0;
+	}
+	return(printLetter(refIndex));
 }
 
 
-//-----
-char OCR::printLetter(int index){ 
+char OCR::printLetter(int index){
 	if(index == 0){
 		return 'a';
 	}
@@ -433,82 +508,4 @@ char OCR::printLetter(int index){
 	else{
 		return ' ';
 	}
-}
-//Compares an image to a reference library of characters and outputs the matching character
-char OCR::compareChar(Image croppedImage, vector<Image> iList) {
-	int imgH = croppedImage.getHeight();
-	int imgW = croppedImage.getWidth();
-	int countBP1 = 0;
-	int countBP2 = 0;
-	int countBP3 = 0;
-	int refIndex = 0;
-	Image iRef;
-	//count black pixels of input image
-	for(int x=0; x<imgH; x++){
-		for(int y = 0; y<imgW; y++){
-			if(croppedImage.getPixel(y, x, Image::R) == 0 && croppedImage.getPixel(y, x, Image::G) == 0 && croppedImage.getPixel(y, x, Image::B) == 0){
-				countBP1++;
-			}
-		}
-	}
-	//read first image of vector iList and assign to iRef
-	iRef = iList.at(0);
-	//count black pixels of reference image
-	for(int i = 0; i < iRef.getHeight(); i++){
-		for(int j = 0; j < iRef.getWidth(); j++){
-			if(iRef.getPixel(j, i, Image::R) == 0 && iRef.getPixel(j, i, Image::G) == 0 && iRef.getPixel(j, i, Image::B) == 0){
-				countBP2++;
-			}
-		}
-	}
-	
-	int currDiff = 0;
-	int bestDiff = countBP2 - countBP1;
-	//loop through each reference image in iList
-	for(int k = 1; k < iList.size(); k++){
-		//read second image of vector iList and assign to iRef
-		iRef = iList.at(k);
-		//count black pixels of reference image
-		for(int m = 0; m < iRef.getHeight(); m++){
-			for(int n = 0; n < iRef.getWidth(); n++){
-				//get R,G,B values of reference image and check if its a black pixel
-				if(iRef.getPixel(n, m, Image::R) == 0 && iRef.getPixel(n, m, Image::G) == 0 && iRef.getPixel(n, m, Image::B) == 0){
-					countBP3++; //increment black pixel count
-				}
-			}
-		}
-		//compare black pixel count of input image to reference image
-		//
-		currDiff = countBP3 - countBP1;
-		if( abs(currDiff) < abs(bestDiff)  ){
-			refIndex = k;
-			bestDiff = currDiff;
-			
-		}
-		//reset count for next reference image
-		countBP3 = 0;
-	}
-	return(printLetter(refIndex));
-}
-
-//character cropping function 
-vector<Image> OCR::charCrop(Image img){ 
-	int wImg = img.getWidth();
-	int hImg = img.getHeight();
-	
-	vector<Image> imgList;
-	for(int i = 0; i < hImg; i += 56) {
-		for(int j = 0; j < wImg; j += 30) {
-			Image imge(30, 56);
-			for(int m = 0; m < 56; m++){
-				for(int n = 0; n < 30; n++){
-					imge.setPixel( n, m, Image::R, img.getPixel(j+n, i+m, Image::R));
-					imge.setPixel( n, m, Image::G, img.getPixel(j+n, i+m, Image::G));
-					imge.setPixel( n, m, Image::B, img.getPixel(j+n, i+m, Image::B));
-				}
-			}
-			imgList.push_back(imge);
-		}
-	}
-	return imgList;
 }
