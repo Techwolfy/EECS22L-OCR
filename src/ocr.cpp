@@ -42,7 +42,7 @@ float OCR::averageIntensity(Image croppedImage) {
 std::string OCR::recognize() {
 	std::string text;
 	std::vector<Image> charImages = cropCharImages(image);
-	int newLine = 0;
+	int newLine = 0; 	
 
 	for(int i = 0; i < charImages.size(); i++) {
 		text += imageToChar(charImages.at(i));
@@ -82,9 +82,9 @@ char OCR::imageToChar(Image croppedImage) {
 	int inputBP = countBlackPixels(croppedImage); //Count black pixels of input image
 	int refIndex = -1;	//Default to an invalid value, which translates to ' '
 	int currDiff = 0;
-	int bestDiff = 0;
+	int bestDiff = abs(countBlackPixels(refImages[0]) - inputBP);
 
-	for(int i = 0; i < refImages.size(); i++) {
+	for(int i = 1; i < refImages.size(); i++) {
 		//Compare black pixel count of input image to reference image
 		currDiff = abs(countBlackPixels(refImages.at(i)) - inputBP);
 		if(currDiff < bestDiff) {
