@@ -11,6 +11,7 @@ TESTS_GUI=test-gui
 TESTS_IO=test-imagepixbuf
 TESTS_PREPROC=test-preprocessing
 TESTS_POSTPROC=test-postprocessing
+TESTS_OCR=test-ocr
 
 #Build everything
 .PHONY: all
@@ -40,7 +41,7 @@ bin/ocr: build/main.o $(addprefix build/, $(OBJS))
 
 #Test individual objects
 .PHONY: test
-test: | test-gui test-io test-preprocessing test-postprocessing
+test: | test-gui test-io test-preprocessing test-postprocessing test-ocr
 
 .PHONY: test-gui
 test-gui: $(addprefix build/test/, $(TESTS_GUI)) | build
@@ -59,6 +60,11 @@ test-preprocessing: $(addprefix build/test/, $(TESTS_PREPROC)) | build
 
 .PHONY: test-postprocessing
 test-postprocessing: $(addprefix build/test/, $(TESTS_POSTPROC)) | build
+	@echo "Running tests..."
+	for t in $^; do cd build/test; ../../$$t; done
+
+.PHONY: test-ocr
+test-ocr: $(addprefix build/test/, $(TESTS_OCR)) | build
 	@echo "Running tests..."
 	for t in $^; do cd build/test; ../../$$t; done
 
