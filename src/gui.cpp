@@ -320,7 +320,7 @@ void GUI::onCropImage() {
 			if(xStart < 0 || yStart < 0 || xEnd <= 0 || yEnd <= 0 || xStart >= ocrImage->get_width() || yStart >= ocrImage->get_height() || xEnd > ocrImage->get_width() || yEnd > ocrImage->get_height()) {
 				throw std::runtime_error("Crop dimension out of bounds!");
 			} else {
-				updateImage(Gdk::Pixbuf::create_subpixbuf(ocrImage, xStart, xEnd, xEnd - xStart, yEnd - yStart));
+				updateImage(Gdk::Pixbuf::create_subpixbuf(ocrImage, xStart, yStart, xEnd - xStart, yEnd - yStart));
 			}
 		} catch(std::exception &e) {
 			showErrorDialog(e.what());
