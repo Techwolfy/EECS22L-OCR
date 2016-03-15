@@ -1,7 +1,10 @@
-//test-ocr.cpp
+//Test-OCR.cpp
 //Test for OCR functions
+
+//Includes
 #include <stdio.h>
 #include <assert.h>
+#include <fstream>
 #include <gtkmm/main.h>
 #include <glibmm/refptr.h>
 #include <gdkmm/pixbuf.h>
@@ -9,24 +12,24 @@
 #include "ocr.h"
 #include "helloworld.pixbuf"
 
-
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 	//Set up GtkMM
 	Gtk::Main graphicsMain(argc, argv);
 	
 	//Create images from reference 
 	Image inputImage(Gdk::Pixbuf::create_from_inline(sizeof(helloworld_pixbuf), helloworld_pixbuf));
-	//Image refImage(Gdk::Pixbuf::create_from_inline(sizeof(couriernew_pixbuf), couriernew_pixbuf));
 	
 	//Convert HelloWorld Image to black and white 
 	inputImage.toBW(20);
 
 	//Perform OCR Functions
 	OCR ocrImage(inputImage);
-	ocrImage.recognize();
+	std::fstream file;
+	file.open("ocr-out.txt", std::fstream::out | std::fstream::trunc);
+	file << ocrImage.recognize();
+	file.flush();
+	file.close();
 		
-	printf("OCR test complete.\n");
+	printf("OCR test complete. CHECK OUTPUT FILE FOR RESULT!\n");
 	return 0;
-	
-
 }

@@ -31,7 +31,7 @@ public:
 	Image* toBW(unsigned char threshold = 20);
 	Image* rotate(double degrees);
 	Image* crop(int startX, int startY, int endX, int endY);
-	std::vector<int> cropEdge();//crop optimal image
+	std::vector<int> findCropEdge();
 	Image* removeStains();
 
 private:

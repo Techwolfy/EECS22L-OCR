@@ -10,7 +10,6 @@
 #include <iostream>
 #include "image.h"
 
-
 //Load raw pixbuf resource at compile time
 #include "helloworld.pixbuf"
 
@@ -24,8 +23,8 @@ int main(int argc, char *argv[]) {
 	//Run preprocessing functions
 	image.removeStains();
 	image.toBW(185);
-	std::vector<int> cp = image.cropEdge();
-	image.crop(cp[0],cp[1],cp[2],cp[3]);
+	std::vector<int> edge = image.findCropEdge();
+	image.crop(edge[0], edge[1], edge[2], edge[3]);
 	image.save("preprocessing-out-crop.jpg");
 	image.rotate(7.5);
 	image.save("preprocessing-out-rotate.jpg");

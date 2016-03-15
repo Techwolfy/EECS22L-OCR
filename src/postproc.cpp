@@ -1,5 +1,6 @@
 //PostProc.cpp
 
+//Includes
 #include <string>
 #include <vector>
 #include "postproc.h"
@@ -20,13 +21,13 @@ const std::string PostProc::dictionary[] = {
 	"extern",
 	"float",
 	"for",
-  "function",
+	"function",
 	"goto",
 	"if",
 	"int",
-  "initial", 
+	"initial",
 	"long",
-  "main",
+	"main",
 	"register",
 	"return",
 	"short",
@@ -48,7 +49,7 @@ const std::string PostProc::dictionary[] = {
 	"hello",
 	"world",
 	"printf",
-  "program",
+	"program",
 	"stdio",
 	"main",
 	"scanf"};

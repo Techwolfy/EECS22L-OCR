@@ -41,6 +41,7 @@ const char *GUI::uiXML ="<ui>"
 						"		<menu action='MenuPreProc'>"
 						"			<menuitem action='RotateImage'/>"
 						"			<menuitem action='CropImage'/>"
+						"			<menuitem action='AutoCropImage'/>"
 						"			<menuitem action='DeColorImage'/>"
 						"			<menuitem action='DeStainImage'/>"
 						"			<separator/>"
@@ -113,6 +114,7 @@ void GUI::setupMenuWidget() {
 	menuActionGroup->add(Gtk::Action::create("MenuPreProc", "_Pre-Processing"));
 	menuActionGroup->add(Gtk::Action::create("RotateImage", Gtk::Stock::ORIENTATION_PORTRAIT, "Rotate Image"), sigc::mem_fun(*this, &GUI::onRotateImage));
 	menuActionGroup->add(Gtk::Action::create("CropImage", Gtk::Stock::PAGE_SETUP, "Crop Image"), sigc::mem_fun(*this, &GUI::onCropImage));
+	menuActionGroup->add(Gtk::Action::create("AutoCropImage", Gtk::Stock::PAGE_SETUP, "AutoCrop Image"), sigc::mem_fun(*this, &GUI::onAutoCropImage));
 	menuActionGroup->add(Gtk::Action::create("DeColorImage", Gtk::Stock::COLOR_PICKER, "Remove Color"), sigc::mem_fun(*this, &GUI::onRemoveColor));
 	menuActionGroup->add(Gtk::Action::create("DeStainImage", Gtk::Stock::SELECT_COLOR, "Remove Stains"), sigc::mem_fun(*this, &GUI::onRemoveStains));
 	menuActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"), sigc::mem_fun(*this, &GUI::onUndo));
@@ -325,6 +327,21 @@ void GUI::onCropImage() {
 		} catch(std::exception &e) {
 			showErrorDialog(e.what());
 		}
+	}
+}
+
+//Crop the image to calculated coordinates
+void GUI::onAutoCropImage() {
+	std::vector<int> edge = Image(ocrImage).findCropEdge();
+	//Crop image
+	try {
+		if(edge[0] < 0 || edge[1] < 0 || edge[2] <= 0 || edge[3] <= 0 || edge[0] >= ocrImage->get_width() || edge[1] >= ocrImage->get_height() || edge[2] > ocrImage->get_width() || edge[3] > ocrImage->get_height()) {
+			throw std::runtime_error("Auto crop failed!");
+		} else {
+			updateImage(Gdk::Pixbuf::create_subpixbuf(ocrImage, edge[0], edge[1], edge[2] - edge[0], edge[3] - edge[1]));
+		}
+	} catch(std::exception &e) {
+		showErrorDialog(e.what());
 	}
 }
 
