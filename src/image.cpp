@@ -188,12 +188,13 @@ Image* Image::rotate(double degrees) {
 
 
 //return 2 set of coordinate for optimal cropping
-int* Image::cropEdge(){
+std::vector<int> Image::cropEdge(){
 	
-	static int cropCoordinate[4];
-	
+	std::vector<int> cropCoordinate;
+	cropCoordinate.resize(4);
 	int startX = w,startY = h,endX = 0,endY = 0;
 	int i, j;
+	
 	
 	//find startX
 	for (j = 0; j < h; j++){
@@ -202,14 +203,11 @@ int* Image::cropEdge(){
 				if (startX > i){
 					startX = i;
 				}
-				if (j >= h){
-					goto getStartX;
-				}
 				break;
 			}
 		}
 	}
-getStartX: cropCoordinate[0] = startX;//find next coordinate
+	cropCoordinate[0] = startX;//find next coordinate
 	
 	
 	//find startY
@@ -218,9 +216,6 @@ getStartX: cropCoordinate[0] = startX;//find next coordinate
 			if (r[j][i] < 10){
 				if (j < startY){
 					startY = j;
-				}
-				if (i >= w){
-					goto getStartY;
 				}
 				break;
 			}
@@ -235,14 +230,11 @@ getStartY: cropCoordinate[1] = startY;//find next coordinate
 				if (i > endX){
 					endX = i;
 				}
-				if (j < 0){
-					goto getEndX;
-				}
 				break;
 			}
 		}
 	}
-getEndX: cropCoordinate[2] = endX;//find next coordinate
+	cropCoordinate[2] = endX;//find next coordinate
 	
 	//find endY
 	for (i = w - 1; i >= 0; i--){
@@ -251,14 +243,11 @@ getEndX: cropCoordinate[2] = endX;//find next coordinate
 				if (j > endY){
 					endY = j;
 				}
-				if (i < 0){
-					goto getEndY;
-				}
 				break;
 			}
 		}
 	}
-getEndY: cropCoordinate[3] = endY;//find next coordinate
+	cropCoordinate[3] = endY;//find next coordinate
 	
 	return cropCoordinate;
 }

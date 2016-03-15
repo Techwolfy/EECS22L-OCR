@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 	//Run preprocessing functions
 	image.removeStains();
 	image.toBW(185);
-	int* cp = image.cropEdge();
+	std::vector<int> cp = image.cropEdge();
 	image.crop(cp[0],cp[1],cp[2],cp[3]);
 	image.save("preprocessing-out-crop.jpg");
 	image.rotate(7.5);
