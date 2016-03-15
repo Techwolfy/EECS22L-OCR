@@ -199,7 +199,7 @@ std::vector<int> Image::findCropEdge() {
 	for(int j = 0; j < h; j++) {
 		for(int i = 0; i < w; i++) {
 			if(r[j][i] < 10) {
-				if(cropCoordinate[0] > i) {
+				if(i < cropCoordinate[0]) {
 					cropCoordinate[0] = i;
 				}
 				break;
