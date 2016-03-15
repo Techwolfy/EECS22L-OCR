@@ -221,7 +221,7 @@ std::vector<int> Image::cropEdge(){
 			}
 		}
 	}
-getStartY: cropCoordinate[1] = startY;//find next coordinate
+	cropCoordinate[1] = startY;//find next coordinate
 	
 	//find endX
 	for (j = h - 1; j >= 0; j--){
