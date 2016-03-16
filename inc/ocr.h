@@ -9,27 +9,26 @@
 class OCR {
 public:
 	//Constructors
-	OCR(Image input);
+	  OCR(Image input);
 
 	//Destructor
-	~OCR();
+	  ~OCR();
 	
 	//Functions
-	std::string recognize();
+	  std::string recognize();
 
 private:
 	//Variables
-	const float *intensities;
-	const Image reference;
-	std::vector<Image> refImages;
-	Image image;
+  	const Image reference;
+  	std::vector<Image> refImages;
+	  Image image;
 	
 	//Functions
-	float averageIntensity(Image croppedImage);
-	std::vector<Image> cropCharImages(Image input);
-	char imageToChar(Image croppedImage);
-	int countBlackPixels(Image input);
-	char printChar(int i);
+	  std::vector<Image> cropCharImages(Image input);
+	  char imageToChar(Image croppedImage);
+	  int countBlackPixels(Image input);
+	  char printChar(int index);
+    Image imagePosition(Image im);
 };
 
 #endif	//OCR_H
