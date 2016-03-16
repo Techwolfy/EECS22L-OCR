@@ -8,12 +8,11 @@
 #include "ocr.h"
 
 //Include numeric constants and reference image resource
-#include "averageIntensities.h"
+
 #include "couriernew.pixbuf"
 
 //Constructor
-OCR::OCR(Image input) : intensities(averageIntensities),
-						reference(Gdk::Pixbuf::create_from_inline(sizeof(couriernew_pixbuf), couriernew_pixbuf)),
+OCR::OCR(Image input) : reference(Gdk::Pixbuf::create_from_inline(sizeof(couriernew_pixbuf), couriernew_pixbuf)),
 						image(input) {
 	refImages = cropCharImages(reference);
 }
@@ -24,19 +23,6 @@ OCR::~OCR() {
 }
 
 //Functions
-//Finds the average intensity of an image
-float OCR::averageIntensity(Image croppedImage) {
-	float total = 0.0;
-	
-	for(int i = 0; i < croppedImage.getHeight(); i++) {
-		for(int j = 0; j < croppedImage.getWidth(); j++) {
-			total += croppedImage.getPixel(j, i, Image::R) + croppedImage.getPixel(j, i, Image::G) + croppedImage.getPixel(j, i, Image::B);
-		}
-	}
-	
-	return total / (3 * croppedImage.getHeight() * croppedImage.getWidth());
-}
-
 
 //Takes 30x56 segments of the image and compares to a reference library
 std::string OCR::recognize() {
@@ -70,7 +56,8 @@ std::vector<Image> OCR::cropCharImages(Image input) {
 					charImage.setPixel(n, m, Image::B, input.getPixel(j + n, i + m, Image::B));
 				}
 			}
-			images.push_back(charImage);
+      Image resultant = imagePosition(charImage);
+			images.push_back(resultant);
 		}
 	}
 
@@ -79,116 +66,183 @@ std::vector<Image> OCR::cropCharImages(Image input) {
 
 //Compares an image to a reference library of characters and outputs the matching character 
 char OCR::imageToChar(Image croppedImage) {
-	int inputBP = countBlackPixels(croppedImage); //Count black pixels of input image
-	int refIndex = -1;	//Default to an invalid value, which translates to ' '
-	int currDiff = 0;
-	int bestDiff = abs(countBlackPixels(refImages[0]) - inputBP);
-
-	for(int i = 1; i < refImages.size(); i++) {
-		//Compare black pixel count of input image to reference image
-		currDiff = abs(countBlackPixels(refImages.at(i)) - inputBP);
-		if(currDiff < bestDiff) {
-			bestDiff = currDiff;
-			refIndex = i;
+	char output = ' ';
+	int same = 0, most = 0;
+    for(int refIndex = 0; refIndex < refImages.size(); refIndex++) {
+        for(int i = 0; i < croppedImage.getHeight(); i++) {
+            for(int j = 0; j < croppedImage.getWidth(); j++){
+			    if(abs(croppedImage.getPixel(j, i, Image::R) - refImages[refIndex].getPixel(j, i, Image::R)) < 100){
+				      same++;							       
+          }
+          else{
+              same--;
+          }
+			}  
+		}  
+		if(same > most) {
+			most = same;
+			output = printChar(refIndex);      
 		}
+     same = 0;
 	}
 
-	return printChar(refIndex);
+	  return output;
 }
 
-//Count the number of black pixels in an image
-int OCR::countBlackPixels(Image input) {
-	int count = 0;
-
-	for(int x = 0; x < input.getHeight(); x++) {
-		for(int y = 0; y < input.getWidth(); y++) {
-			if(input.getPixel(x, y, Image::R) == 0 && input.getPixel(x, y, Image::G) == 0 && input.getPixel(x, y, Image::B) == 0) {
-				count++;
-			}
-		}
-	}
-
-	return count;
-}
 
 //Map reference image index to character
 char OCR::printChar(int index) {
 	if(index >= 0 && index <= 25) {
 		return 'a' + index;
 	} else if(index >= 26 && index <= 51) {
-		return 'A' + (index - 26);
-	} else if(index >= 52 && index <= 60) {
-		return '1' + (index - 52);
-	} else if(index == 61) {
+		return 'A' + (index - 32);
+  }  else if (index = 58) {
+    return ' ';
+	} else if(index >= 64 && index <= 72) {
+		return '1' + (index - 64);
+	} else if(index == 73) {
 		return '0';
 	} else {
 		switch(index) {
-			case 62:
+			case 96:
 				return '~';
-			case 63:
+        break;
+			case 97:
 				return '!';
-			case 64:
+        break;
+			case 98:
 				return '@';
-			case 65:
+        break;
+			case 99:
 				return '#';
-			case 66:
+        break;
+			case 100:
 				return '$';
-			case 67:
+        break;
+			case 101:
 				return '%';
-			case 68:
+        break;
+			case 102:
 				return '^';
-			case 69:
+        break;
+			case 103:
 				return '&';
-			case 70:
+        break;
+			case 104:
 				return '*';
-			case 71:
+        break;
+			case 105:
 				return '(';
-			case 72:
+        break;
+			case 106:
 				return ')';
-			case 73:
+        break;
+			case 107:
 				return '_';
-			case 74:
+        break;
+			case 108:
 				return '+';
-			case 75:
+        break;
+			case 109:
 				return '`';
-			case 76:
+        break;
+			case 110:
 				return '-';
-			case 77:
+        break;
+			case 111:
 				return '=';
-			case 78:
+        break;
+			case 112:
 				return '{';
-			case 79:
+        break;
+			case 113:
 				return '}';
-			case 80:
+        break;
+			case 114:
 				return '|';
-			case 81:
+        break;
+			case 115:
 				return '[';
-			case 82:
+        break;
+			case 116:
 				return ']';
-			case 83:
+        break;
+			case 117:
 				return '\\';
-			case 84:
+        break;
+			case 118:
 				return ':';
-			case 85:
+        break;
+			case 119:
 				return '"';
-			case 86:
+        break;
+			case 120:
 				return '<';
-			case 87:
+        break;
+			case 121:
 				return '>';
-			case 88:
+        break;
+			case 122:
 				return '?';
-			case 89:
+        break;
+			case 123:
 				return ';';
-			case 90:
+        break;
+			case 124:
 				return '\'';
-			case 91:
+        break;
+			case 125:
 				return ',';
-			case 92:
+        break;
+			case 126:
 				return '.';
-			case 93:
+        break;
+			case 127:
 				return '/';
+        break;
 			default:
 				return ' ';
 		}
 	}
+}
+Image OCR::imagePosition(Image im){//repositions image to top left corner by setting topmost black pixel to row 0 and leftmost black pixel to col 0
+    int top = 0,left = 0;
+    Image resultant(30, 56);
+	for(int i = 0; i < im.getHeight(); i++) {
+	    for(int j = 0; j < im.getWidth(); j++) {
+	        if((im.getPixel(j, i, Image::R) + im.getPixel(j, i, Image::G) + im.getPixel(j, i, Image::B))/3 < 5){
+                top = i;
+	            break;
+            }
+        }
+        if(top != 0){
+          break;
+		}
+	}
+    for(int j = 0; j < im.getWidth(); j++) {
+	    for(int i = 0; i < im.getHeight(); i++) {
+	        if((im.getPixel(j, i, Image::R) + im.getPixel(j, i, Image::G) + im.getPixel(j, i, Image::B))/3 < 5){
+                left = j;
+	            break;
+            }
+        }
+        if(left != 0){
+          break;
+		}
+	}
+	for(int i = 0; i < resultant.getHeight(); i++) {
+	    for(int j = 0; j < resultant.getWidth(); j++) {
+	        if((j + left) >= im.getWidth() || (i + top) >= im.getHeight()){
+			        resultant.setPixel(j, i, Image::R, 255);
+              resultant.setPixel(j, i, Image::G, 255);
+              resultant.setPixel(j, i, Image::B, 255);
+            }
+            else{
+              resultant.setPixel(j, i, Image::R, im.getPixel(j + left, i + top, Image::R));
+	            resultant.setPixel(j, i, Image::G, im.getPixel(j + left, i + top, Image::G));
+	            resultant.setPixel(j, i, Image::B, im.getPixel(j + left, i + top, Image::B));
+            }
+            }
+        }
+    return resultant;
 }
