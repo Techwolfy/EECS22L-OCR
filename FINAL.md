@@ -39,9 +39,9 @@ Limitations
 
 * The OCR does not correctly identify all characters; the percentage correct is highly dependent on the way the image is cropped. 
 * The image must also have Black and White conversion performed on it beforehand.
-* The AutoCrop does not always crop images to their optimal size
-* The image text must be 12 pt Courier font
-* The text cannot be slanted, that is, the angle with the horizontal must be zero degrees. Otherwise, ,it must be rotated manually.
+* The AutoCrop does not always crop images to their optimal size.
+* The image text must be 12 pt Courier font.
+* The text cannot be slanted, that is, the angle with the horizontal must be zero degrees. Otherwise, it must be rotated manually.
 * The OCR may not work properly if the image width and height is not a multiple of 30 and 56 respectively.
-* The optimal cropping corrdinates for the full hellopworld.jpg is 296,309,1586,1317
-* If the image is cropped to 200,270,1650,1500 Autocrop will crop properly
+* The optimal cropping coordinates for the provided "01_HelloWorld_Clean300DPI.jpg" are 296,309,1586,1317.
+* If the image is cropped to 200,270,1650,1500 then AutoCrop will properly crop the remainder.
