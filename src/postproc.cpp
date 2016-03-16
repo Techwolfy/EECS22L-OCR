@@ -135,8 +135,8 @@ std::string PostProc::fixWords() {
 	std::string word;
 
 	while(end < text.length()) {
-		start = text.find_first_not_of(" /*|.,;:+#<>\"\'(){}!\t\n", end);
-		end = text.find_first_of(" /*|.,;:+#<>\"\'(){}!\t\n", start);
+		start = text.find_first_not_of(" /*|.,;:-+#<>\"\'(){}!\t\n", end);
+		end = text.find_first_of(" /*|.,;:-+#<>\"\'(){}!\t\n", start);
 		
 		if(start > text.length() || end > text.length()) {
 			break;
