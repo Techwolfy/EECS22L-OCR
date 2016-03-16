@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 	Image inputImage(Gdk::Pixbuf::create_from_inline(sizeof(helloworld_pixbuf), helloworld_pixbuf));
 	
 	//Convert HelloWorld Image to black and white 
-	inputImage.toBW(20);
+	inputImage.toBW();
 
 	//Perform OCR Functions
 	OCR ocrImage(inputImage);

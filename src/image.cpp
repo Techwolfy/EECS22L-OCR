@@ -120,7 +120,7 @@ int Image::save(std::string filename) {
 }
 
 //Change the image color to black and white and remove some stain and winkle
-Image* Image::toBW(unsigned char threshold /* = 20 */) {
+Image* Image::toBW(unsigned char threshold /* = 185 */) {
 	for(int y = 0; y < h; y++) {
 		for(int x = 0; x < w; x++) {
 			if(((r[y][x] + g[y][x] + b[y][x]) / 3) < threshold) {

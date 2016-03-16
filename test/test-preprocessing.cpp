@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
 	//Run preprocessing functions
 	image.removeStains();
-	image.toBW(185);
+	image.toBW();
 	std::vector<int> edge = image.findCropEdge();
 	image.crop(edge[0], edge[1], edge[2], edge[3]);
 	image.save("preprocessing-out-crop.jpg");
