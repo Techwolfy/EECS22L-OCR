@@ -6,7 +6,7 @@
 #include <gdkmm/pixbuf.h>
 #include "image.h"
 #include "ocr.h"
-
+#include <iostream>
 //Include numeric constants and reference image resource
 
 #include "couriernew.pixbuf"
@@ -29,11 +29,10 @@ std::string OCR::recognize() {
 	std::string text;
 	std::vector<Image> charImages = cropCharImages(image);
 	int newLine = 0; 	
-
 	for(int i = 0; i < charImages.size(); i++) {
 		text += imageToChar(charImages.at(i));
 		newLine++;
-		if(newLine == charImages.at(i).getWidth()) {
+		if(newLine == image.getWidth()/charImages.at(i).getWidth()) {
 			text += "\n";
 			newLine = 0;
 		}
@@ -68,6 +67,7 @@ std::vector<Image> OCR::cropCharImages(Image input) {
 char OCR::imageToChar(Image croppedImage) {
 	char output = ' ';
 	int same = 0, most = 0;
+ 
     for(int refIndex = 0; refIndex < refImages.size(); refIndex++) {
         for(int i = 0; i < croppedImage.getHeight(); i++) {
             for(int j = 0; j < croppedImage.getWidth(); j++){
@@ -81,7 +81,7 @@ char OCR::imageToChar(Image croppedImage) {
 		}  
 		if(same > most) {
 			most = same;
-			output = printChar(refIndex);      
+			output = printChar(refIndex); 
 		}
      same = 0;
 	}
@@ -94,11 +94,9 @@ char OCR::imageToChar(Image croppedImage) {
 char OCR::printChar(int index) {
 	if(index >= 0 && index <= 25) {
 		return 'a' + index;
-	} else if(index >= 26 && index <= 51) {
+	} else if(index >= 32 && index <= 57) {
 		return 'A' + (index - 32);
-  }  else if (index = 58) {
-    return ' ';
-	} else if(index >= 64 && index <= 72) {
+  } else if(index >= 64 && index <= 72) {
 		return '1' + (index - 64);
 	} else if(index == 73) {
 		return '0';
