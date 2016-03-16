@@ -8,6 +8,7 @@
 #include "gui.h"
 #include "image.h"
 #include "ocr.h"
+#include "postproc.h"
 
 //Program entry point
 int main(int argc, char *argv[]) {
@@ -27,8 +28,11 @@ int main(int argc, char *argv[]) {
 		std::vector<int> crop = ocrImage.findCropEdge();
 		Glib::RefPtr<Gdk::Pixbuf> ocrPixbuf = Gdk::Pixbuf::create_subpixbuf(ocrImage.getPixbuf(), crop[0], crop[1], crop[2] - crop[0], crop[3] - crop[1]);
 	
-		//Run OCR on cropped image and print the text to stdout
-		std::cout << OCR(Image(ocrPixbuf)).recognize() << std::endl;
+		//Run OCR on cropped image
+		std::string ocrText = OCR(Image(ocrPixbuf)).recognize();
+
+		//Print processed text to stdout
+		std::cout << PostProc(ocrText).execute() << std::endl;
 	} else {	//GUI Mode
 		//Create the GUI object
 		GUI gui;

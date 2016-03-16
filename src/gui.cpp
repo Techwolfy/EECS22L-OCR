@@ -21,7 +21,6 @@
 #include <cairomm/refptr.h>
 #include <cairomm/surface.h>
 #include <cairomm/context.h>
-#include <iostream>
 #include "image.h"
 #include "ocr.h"
 #include "postproc.h"
@@ -52,6 +51,7 @@ const char *GUI::uiXML ="<ui>"
 						"		</menu>"
 						"		<menu action='MenuPostProc'>"
 						"			<menuitem action='PostProcessText'/>"
+						"			<menuitem action='CompileRun'/>"
 						"		</menu>"
 						"		<menu action='MenuHelp'>"
 						"			<menuitem action='Help'/>"
@@ -119,9 +119,10 @@ void GUI::setupMenuWidget() {
 	menuActionGroup->add(Gtk::Action::create("DeStainImage", Gtk::Stock::SELECT_COLOR, "Remove Stains"), sigc::mem_fun(*this, &GUI::onRemoveStains));
 	menuActionGroup->add(Gtk::Action::create("Undo", Gtk::Stock::UNDO, "Undo"), sigc::mem_fun(*this, &GUI::onUndo));
 	menuActionGroup->add(Gtk::Action::create("MenuOCR", "_OCR"));
-	menuActionGroup->add(Gtk::Action::create("RunOCR", Gtk::Stock::EXECUTE, "Run OCR"), sigc::mem_fun(*this, &GUI::onOCR));
+	menuActionGroup->add(Gtk::Action::create("RunOCR", Gtk::Stock::CONVERT, "Run OCR"), sigc::mem_fun(*this, &GUI::onOCR));
 	menuActionGroup->add(Gtk::Action::create("MenuPostProc", "_Post-Processing"));
 	menuActionGroup->add(Gtk::Action::create("PostProcessText", Gtk::Stock::SELECT_FONT, "Post-Process Text"), sigc::mem_fun(*this, &GUI::onPostProcess));
+	menuActionGroup->add(Gtk::Action::create("CompileRun", Gtk::Stock::EXECUTE, "Compile & Run"), sigc::mem_fun(*this, &GUI::onCompileRun));
 	menuActionGroup->add(Gtk::Action::create("MenuHelp", "_Help"));
 	menuActionGroup->add(Gtk::Action::create("Help", Gtk::Stock::HELP), sigc::mem_fun(*this, &GUI::onHelp));
 	menuActionGroup->add(Gtk::Action::create("About", Gtk::Stock::ABOUT), sigc::mem_fun(*this, &GUI::onAbout));
@@ -362,6 +363,8 @@ void GUI::onUndo() {
 //Run the OCR process on the image
 void GUI::onOCR() {
 	Glib::RefPtr<Gtk::TextBuffer> textData = Gtk::TextBuffer::create();
+	textData->set_text("OCR running...\n");
+	textView.set_buffer(textData);
 	textData->set_text(OCR(Image(ocrImage)).recognize());
 	textView.set_buffer(textData);
 }
@@ -372,6 +375,18 @@ void GUI::onPostProcess() {
 	textData->set_text(PostProc(textView.get_buffer()->get_text()).execute());
 	textView.set_buffer(textData);
 }
+
+//Compile and run the text as C++ code
+void GUI::onCompileRun() {
+	std::fstream file;
+	file.open("tmp.cpp", std::fstream::out | std::fstream::trunc);
+	file << textView.get_buffer()->get_text();
+	file.flush();
+	file.close();
+	system("g++ -o ocr_code tmp.cpp; rm tmp.cpp; ./ocr_code");
+	showMessageDialog("Compiling and running code; please check the console window for the result.\n");
+}
+
 
 //Display a brief description of the program
 void GUI::onAbout() {

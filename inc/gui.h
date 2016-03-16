@@ -69,6 +69,7 @@ private:
 	void onUndo();
 	void onOCR();
 	void onPostProcess();
+	void onCompileRun();
 	void onHelp();
 	void onAbout();
 };
