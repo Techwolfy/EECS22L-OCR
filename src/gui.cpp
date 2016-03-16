@@ -347,7 +347,7 @@ void GUI::onAutoCropImage() {
 
 //Convert image to black and white
 void GUI::onRemoveColor() {
-	updateImage(Image(ocrImage).toBW(185)->getPixbuf());
+	updateImage(Image(ocrImage).toBW()->getPixbuf());
 }
 
 //Remove stains from image

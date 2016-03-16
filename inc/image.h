@@ -28,7 +28,7 @@ public:
 	Glib::RefPtr<Gdk::Pixbuf> getPixbuf();
 	static void freePixbufByteArray(const guint8 *array);
 	int save(std::string filename);
-	Image* toBW(unsigned char threshold = 20);
+	Image* toBW(unsigned char threshold = 185);
 	Image* rotate(double degrees);
 	Image* crop(int startX, int startY, int endX, int endY);
 	std::vector<int> findCropEdge();
