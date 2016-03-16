@@ -75,7 +75,7 @@ char OCR::imageToChar(Image croppedImage) {
         for(int i = 0; i < croppedImage.getHeight(); i++) {
             for(int j = 0; j < croppedImage.getWidth(); j++){
 			          if(abs(croppedImage.getPixel(j, i, Image::R) - refImages[refIndex].getPixel(j, i, Image::R)) < 100){
-				        same++;							       
+				            same++;							       
                 }
                 else{
                     same--;
@@ -87,7 +87,7 @@ char OCR::imageToChar(Image croppedImage) {
 			      output = printChar(refIndex); 
 		    }
     same = 0;
-	}
+	  }
 
 	  return output;
 }
@@ -99,7 +99,7 @@ char OCR::printChar(int index) {
           return 'a' + index;
 	  } else if(index >= 32 && index <= 57) {
 		    return 'A' + (index - 32);
-      } else if(index >= 64 && index <= 72) {
+    } else if(index >= 64 && index <= 72) {
 		    return '1' + (index - 64);
 	  } else if(index == 73) {
 		    return '0';
