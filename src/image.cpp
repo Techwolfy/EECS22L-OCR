@@ -251,17 +251,17 @@ std::vector<int> Image::findCropEdge() {
 	}else{
 		cropCoordinate[0] = 0;
 	}
-	if (cropCoordinate[1] - offsetY >= 0) {
+	if(cropCoordinate[1] - offsetY >= 0){
 		cropCoordinate[1] -= offsetY;
 	}else{
 		cropCoordinate[1] = 0;
 	}
-	if (cropCoordinate[2] + offsetX <= w) {
+	if(cropCoordinate[2] + offsetX <= w){
 		cropCoordinate[2] += offsetX;
 	}else{
 		cropCoordinate[2] = w;
 	}
-	if (cropCoordinate[3] + offsetY <= h) {
+	if(cropCoordinate[3] + offsetY <= h){
 		cropCoordinate[3] += offsetY;
 	}else{
 		cropCoordinate[3] = h;
