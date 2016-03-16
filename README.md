@@ -2,13 +2,14 @@ EECS22L-OCR
 ===========
 
 Author: EECS22L Team 12
-Version: 0.0.1 Alpha
+Version: 1.0.0 Release
 
 File List
 ---------
 README - General instructions and introduction
 COPYRIGHT - Legal information
 INSTALL - Instructions to install the software
+FINAL - Changelog of the latest update
 bin/ - Directory containing software binaries
 doc/ - Directory containing manuals and documentation
 inc/ - Directory containing header files (SOURCE PACKAGE ONLY)
@@ -18,16 +19,17 @@ test/ - Directory containing unit tests (SOURCE PACKAGE ONLY)
 General Instructions
 --------------------
 
--Install software (See INSTALL.md)
--Run ocr.exe
--Under the file tab, click on load image
--Browse and load a .jpg image
--Perform Preprocessing functions under the preprocessing tab
--Save processed image of desired.
--Run OCR
--Run dictionary support under Post Processing tab
--Edit text as needed
--Save text under file tab
+* Install the software (See INSTALL.md)
+* Run the "ocr" binary
+* Under the file tab, click on load image
+* Browse and load a .jpg image
+* Perform Preprocessing functions under the preprocessing tab
+* Save processed image if desired
+* Run OCR
+* Run dictionary comparison under Post Processing tab
+* Edit text as needed
+* Save text if desired
+* Compile and run the code from the Post Processing tab
 
 License
 -------
