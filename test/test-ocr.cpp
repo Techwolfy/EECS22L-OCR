@@ -21,6 +21,9 @@ int main(int argc, char *argv[]) {
 	
 	//Convert HelloWorld Image to black and white 
 	inputImage.toBW();
+	std::vector<int> edge = inputImage.findCropEdge();
+	inputImage.crop(edge[0], edge[1], edge[2], edge[3]);
+
 
 	//Perform OCR Functions
 	OCR ocrImage(inputImage);
