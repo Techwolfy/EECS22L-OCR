@@ -261,7 +261,7 @@ std::vector<int> Image::findCropEdge() {
 	int tailX = (cropCoordinate[2] - cropCoordinate[0])% 30;
 	int tailY = (cropCoordinate[3] - cropCoordinate[1])% 56;
 	if( tailX != 0){
-		if(tailX > 15){
+		if(tailX > 15 && cropCoordinate[2] + tailX <= w-1){
 			cropCoordinate[2] += 30 - tailX;
 		}else{
 			cropCoordinate[2] -= tailX;
@@ -269,7 +269,7 @@ std::vector<int> Image::findCropEdge() {
 	}
 	
 	if( tailY != 0){
-		if(tailY > 28){
+		if(tailY > 28 && cropCoordinate[3] + tailY <= h-1){
 			cropCoordinate[3] += 56 - tailY;
 		}else{
 			cropCoordinate[3] -= tailY;
