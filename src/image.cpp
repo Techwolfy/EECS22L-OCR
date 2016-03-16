@@ -194,6 +194,8 @@ std::vector<int> Image::findCropEdge() {
 	cropCoordinate[1] = h;	//StartY
 	cropCoordinate[2] = 0;	//EndX
 	cropCoordinate[3] = 0;	//EndY
+	int offsetX = 8;
+	int offsetY = 2;
 	
 	//Find StartX
 	for(int j = 0; j < h; j++) {
@@ -242,6 +244,29 @@ std::vector<int> Image::findCropEdge() {
 			}
 		}
 	}
+	
+	//adjust the extra space for a center charator crop
+	if(cropCoordinate[0] - offsetX >= 0){
+		cropCoordinate[0] -= offsetX;
+	}else{
+		cropCoordinate[0] = 0;
+	}
+	if (cropCoordinate[1] - offsetY >= 0) {
+		cropCoordinate[1] -= offsetY;
+	}else{
+		cropCoordinate[1] = 0;
+	}
+	if (cropCoordinate[2] + offsetX <= w) {
+		cropCoordinate[2] += offsetX;
+	}else{
+		cropCoordinate[2] = w;
+	}
+	if (cropCoordinate[3] + offsetY <= h) {
+		cropCoordinate[3] += offsetY;
+	}else{
+		cropCoordinate[3] = h;
+	}
+	
 	
 	return cropCoordinate;
 }
