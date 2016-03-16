@@ -4,7 +4,7 @@ Final Version of EECS22L-OCR
 Features
 --------
 
-*Preprocessing*
+### Preprocessing
 
 * Black and White Conversion
 * Image Crop
@@ -13,12 +13,12 @@ Features
 * Save Image
 
 
-*OCR*
+### OCR
 
 * Capability to convert an image of text to text format
 
 
-*Post Processing*
+### Post Processing
 
 * Dictionary Support
 * Text Editor
