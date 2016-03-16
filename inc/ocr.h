@@ -26,7 +26,6 @@ private:
 	//Functions
     std::vector<Image> cropCharImages(Image input);
     char imageToChar(Image croppedImage);
-    int countBlackPixels(Image input);
     char printChar(int index);
     Image imagePosition(Image im);
 };
