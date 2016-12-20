@@ -1,0 +1,17 @@
+#Intermediate build files
+*.o
+*.d
+
+#Output binary
+ocr
+
+#Image files
+*.jpg
+*.png
+*.ppm
+
+#Build directory
+build/
+
+#Binary directory
+bin/
